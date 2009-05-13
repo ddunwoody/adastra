@@ -21,9 +21,9 @@ class AdAstraWindow(pyglet.window.Window):
         glEndList()
 
         self.camera_pos = 0, 0
-        self.camera_height = 20
+        self.camera_height = 50
         self.min_camera_height = 10
-        self.max_camera_height = 50
+        self.max_camera_height = 100
         self.zoom_in = self.zoom_out = False
 
         self.universe = load_universe(self.width, self.height)
@@ -35,8 +35,12 @@ class AdAstraWindow(pyglet.window.Window):
         player = self.universe.agents['player']
 
         if player:
-            self.camera_pos = (player.body.position.x,
-                               player.body.position.y)
+            player_pos = player.body.position
+            self.camera_pos = player_pos.tuple()
+            distance_sq = player_pos.LengthSquared()
+            force = player_pos.copy()
+            force.mul_float(-100 / distance_sq)
+            player.body.ApplyForce(force, player_pos)
 
         if self.zoom_in:
             self.camera_height /= 10 ** dt
