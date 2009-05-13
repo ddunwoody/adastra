@@ -3,6 +3,7 @@ from __future__ import division
 import pyglet, math
 from pyglet.gl import *
 from Box2D import *
+from adastra.world import *
 
 class AdAstraWindow(pyglet.window.Window):
     def __init__(self):
@@ -25,30 +26,7 @@ class AdAstraWindow(pyglet.window.Window):
         self.max_camera_height = 50
         self.zoom_in = self.zoom_out = False
 
-        aabb = b2AABB()
-        aabb.lowerBound = self.width // -2, self.height // -2
-        aabb.upperBound = self.width // 2, self.height // 2
-        gravity = 0, -10
-        doSleep = True
-        self.world = b2World(aabb, gravity, doSleep)
-
-        # create ground
-        body_def = b2BodyDef()
-        body_def.position.Set(0, -10)
-        ground_body = self.world.CreateBody(body_def)
-        shape_def = b2PolygonDef()
-        shape_def.SetAsBox(50, 10)
-        ground_body.CreateShape(shape_def)
-
-        body_def.position.Set(0, 4)
-        body_def.angle = 0.3
-        box_body = self.world.CreateBody(body_def)
-        shape_def.SetAsBox(1, 1)
-        shape_def.density = 1
-        shape_def.friction = 0.3
-        shape_def.restitution = 0.7
-        box_body.CreateShape(shape_def)
-        box_body.SetMassFromShapes()
+        self.world = load_world(self.width, self.height)
 
         pyglet.clock.schedule_interval(self.step, 1 / 60)
 
