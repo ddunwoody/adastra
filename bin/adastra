@@ -1,0 +1,4 @@
+#!/bin/sh
+
+lib=`dirname $0`/../lib
+PYTHONPATH=$PYTHONPATH:$lib python -O -m adastra.main $*
