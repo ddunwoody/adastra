@@ -1,6 +1,13 @@
 from Box2D import *
+from adastra.agent import Agent
 
-def load_world(width, height):
+class Universe(object):
+    def __init__(self, world):
+        self.world = world
+        self.agents = {}
+        self.background_color = 0, 0, 0.1
+
+def load_universe(width, height):
     aabb = b2AABB()
     aabb.lowerBound = width // -2, height // -2
     aabb.upperBound = width // 2, height // 2
@@ -8,6 +15,7 @@ def load_world(width, height):
     doSleep = True
 
     world = b2World(aabb, gravity, doSleep)
+    universe = Universe(world)
 
     # create ground
     body_def = b2BodyDef()
@@ -19,17 +27,18 @@ def load_world(width, height):
     shape.SetUserData({'color': (0, 0.4, 0)})
 
     # create box
+    agent = Agent()
+    agent.id = 'player'
+    universe.agents[agent.id] = agent
     body_def.position.Set(0, 4)
     body_def.angle = 0.3
-    box_body = world.CreateBody(body_def)
+    agent.body = world.CreateBody(body_def)
     shape_def.SetAsBox(1, 1)
     shape_def.density = 1
     shape_def.friction = 0.3
     shape_def.restitution = 0.7
-    shape = box_body.CreateShape(shape_def)
+    shape = agent.body.CreateShape(shape_def)
     shape.SetUserData({'color': (0, 0, 0.7)})
-    box_body.SetMassFromShapes()
+    agent.body.SetMassFromShapes()
 
-    return world
-
-
+    return universe

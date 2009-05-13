@@ -3,7 +3,7 @@ from __future__ import division
 import pyglet, math
 from pyglet.gl import *
 from Box2D import *
-from adastra.world import *
+from adastra.universe import *
 
 class AdAstraWindow(pyglet.window.Window):
     def __init__(self):
@@ -26,11 +26,18 @@ class AdAstraWindow(pyglet.window.Window):
         self.max_camera_height = 50
         self.zoom_in = self.zoom_out = False
 
-        self.world = load_world(self.width, self.height)
+        self.universe = load_universe(self.width, self.height)
+        self.world = self.universe.world
 
         pyglet.clock.schedule_interval(self.step, 1 / 60)
 
     def step(self, dt):
+        player = self.universe.agents['player']
+
+        if player:
+            self.camera_pos = (player.body.position.x,
+                               player.body.position.y)
+
         if self.zoom_in:
             self.camera_height /= 10 ** dt
         if self.zoom_out:
@@ -42,7 +49,8 @@ class AdAstraWindow(pyglet.window.Window):
         self.world.Step(dt, velocityIterations, positionIterations)
 
     def on_draw(self):
-        glClearColor(0, 0, 0.1, 1)
+        r, g, b = self.universe.background_color
+        glClearColor(r, g, b, 1)
         self.clear()
 
         camera_x, camera_y = self.camera_pos
