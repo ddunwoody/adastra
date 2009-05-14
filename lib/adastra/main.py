@@ -3,7 +3,7 @@ from __future__ import division
 import pyglet, math
 from pyglet.gl import *
 from Box2D import *
-from adastra.universe import *
+from adastra.universe import load_universe
 
 class AdAstraWindow(pyglet.window.Window):
     def __init__(self):
@@ -21,9 +21,9 @@ class AdAstraWindow(pyglet.window.Window):
         glEndList()
 
         self.camera_pos = 0, 0
-        self.camera_height = 50
-        self.min_camera_height = 10
-        self.max_camera_height = 100
+        self.camera_height = 100
+        self.min_camera_height = 1
+        self.max_camera_height = 10000
         self.zoom_in = self.zoom_out = False
 
         self.universe = load_universe(self.width, self.height)
@@ -39,7 +39,7 @@ class AdAstraWindow(pyglet.window.Window):
             self.camera_pos = player_pos.tuple()
             distance_sq = player_pos.LengthSquared()
             force = player_pos.copy()
-            force.mul_float(-100 / distance_sq)
+            force.mul_float(-1000 / distance_sq)
             player.body.ApplyForce(force, player_pos)
 
         if self.zoom_in:

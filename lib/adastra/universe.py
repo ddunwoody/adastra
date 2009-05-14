@@ -22,7 +22,7 @@ def load_universe(width, height):
     body_def.position.Set(0, 0)
     ground_body = world.CreateBody(body_def)
     shape_def = b2CircleDef()
-    shape_def.radius = 10
+    shape_def.radius = 100
     shape = ground_body.CreateShape(shape_def)
     shape.SetUserData({'color': (0, 0.4, 0)})
 
@@ -30,10 +30,10 @@ def load_universe(width, height):
     agent = Agent()
     agent.id = 'player'
     universe.agents[agent.id] = agent
-    body_def.position.Set(0, 15)
+    body_def.position.Set(0, 105)
     body_def.angle = 0.3
     agent.body = world.CreateBody(body_def)
-    agent.body.SetLinearVelocity((4.25, 0))
+    agent.body.SetLinearVelocity((17.5, 0))
     agent.body.SetAngularVelocity(-2)
     shape_def = b2PolygonDef()
     shape_def.SetAsBox(1, 1)
