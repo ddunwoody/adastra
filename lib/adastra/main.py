@@ -7,7 +7,7 @@ from adastra.universe import *
 
 class AdAstraWindow(pyglet.window.Window):
     def __init__(self):
-        pyglet.window.Window.__init__(self, fullscreen=True,
+        pyglet.window.Window.__init__(self, fullscreen=False,
                                       caption="Ad Astra")
         self.set_mouse_visible(False)
         glEnable(GL_BLEND)
@@ -134,6 +134,8 @@ class AdAstraWindow(pyglet.window.Window):
             self.zoom_out = True
         if symbol == pyglet.window.key.EQUAL:
             self.zoom_in = True
+        if symbol == pyglet.window.key.F11:
+            self.set_fullscreen(not self.fullscreen)
 
     def on_key_release(self, symbol, modifiers):
         if symbol == pyglet.window.key.MINUS:
