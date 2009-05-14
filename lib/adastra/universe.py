@@ -83,10 +83,10 @@ def load_universe(width, height):
 
     with create_player(universe) as a:
         a.id = "player"
-        a.position = 0, 105
-        a.angle = 0.3
-        a.linear_velocity = 17.5, 0
-        a.angular_velocity = -2
+        a.position = 0, 101
+        a.angle = 0
+        a.linear_velocity = 0, 0
+        a.angular_velocity = 0
         a.as_box = 1, 1
         a.density = 1
         a.friction = 0.7
