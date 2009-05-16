@@ -17,17 +17,17 @@ class AdAstraWindow(pyglet.window.Window):
 
         self.circle_display_list = glGenLists(1)
         glNewList(self.circle_display_list, GL_COMPILE)
-        self.draw_circle(256)
+        self.draw_circle(1024)
         glEndList()
 
         self.camera_pos = 0, 0
         self.camera_height = 100
         self.min_camera_height = 1
-        self.max_camera_height = 10000
+        self.max_camera_height = 100000
         self.zoom_in = self.zoom_out = False
 
         self.thrust_up = self.thrust_down = self.thrust_left = self.thrust_right = False
-        self.thrust = 20
+        self.thrust = 12
 
         self.universe = load_universe(self.width, self.height)
         self.world = self.universe.world
@@ -42,7 +42,7 @@ class AdAstraWindow(pyglet.window.Window):
             self.camera_pos = player_pos.tuple()
             distance_sq = player_pos.LengthSquared()
             force = player_pos.copy()
-            force.mul_float(-1000 / distance_sq)
+            force.mul_float(-100000 / distance_sq)
             player.body.ApplyForce(force, player_pos)
             if self.thrust_up:
                 player.body.ApplyForce((0, self.thrust), player_pos)

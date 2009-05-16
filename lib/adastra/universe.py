@@ -67,8 +67,9 @@ def create_player(universe):
 
 def load_universe(width, height):
     aabb = b2AABB()
-    aabb.lowerBound = width // -2, height // -2
-    aabb.upperBound = width // 2, height // 2
+    bound = 100000
+    aabb.lowerBound = -bound, -bound
+    aabb.upperBound = bound, bound
     gravity = 0, 0
     doSleep = True
 
@@ -78,12 +79,12 @@ def load_universe(width, height):
     # create ground
     with create_planet(universe) as p:
         p.position = 0, 0
-        p.radius = 100
+        p.radius = 10000
         p.color = 0, 0.4, 0
 
     with create_player(universe) as a:
         a.id = "player"
-        a.position = 0, 101
+        a.position = 0, 10001
         a.angle = 0
         a.linear_velocity = 0, 0
         a.angular_velocity = 0
