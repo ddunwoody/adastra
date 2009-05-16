@@ -39,7 +39,7 @@ class AdAstraWindow(pyglet.window.Window):
 
         if player:
             player_pos = player.body.position
-            self.camera_pos = player_pos.tuple()
+#            self.camera_pos = player_pos.tuple()
             distance_sq = player_pos.LengthSquared()
             force = player_pos.copy()
             force.mul_float(-100000 / distance_sq)
