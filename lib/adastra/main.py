@@ -42,7 +42,7 @@ class AdAstraWindow(pyglet.window.Window):
             self.camera_pos = player_pos.tuple()
             distance_sq = player_pos.LengthSquared()
             force = player_pos.copy()
-            force.mul_float(-100000 / distance_sq)
+            force.mul_float(-10000 / distance_sq)
             player.body.ApplyForce(force, player_pos)
             if self.thrust_up:
                 player.body.ApplyForce((0, self.thrust), player_pos)

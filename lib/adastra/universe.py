@@ -82,12 +82,12 @@ def load_universe(width, height):
     # create ground
     with create_planet(universe) as p:
         p.position = 0, 0
-        p.radius = 10000
+        p.radius = 1000
         p.color = 0, 0.4, 0, 1
 
     with create_player(universe) as a:
         a.id = "player"
-        a.position = 0, 10004
+        a.position = 0, 1004
         a.angle = 0
         a.linear_velocity = 0, 0
         a.angular_velocity = 0
