@@ -48,10 +48,3 @@ def load_svg(path, scale=0.1):
     svg = etree.parse(path)
 
     return get_shape_elements(svg, scale)
-
-def main():
-    load_svg('/home/david/play/adastra/content/ships/basic.svg')
-
-
-if __name__ == '__main__':
-    main()
