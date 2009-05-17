@@ -50,7 +50,15 @@ class Player(Planet):
         agent.body = universe.world.CreateBody(body_def)
         agent.body.SetLinearVelocity(self.fields['linear_velocity'])
         agent.body.SetAngularVelocity(self.fields['angular_velocity'])
-        load_svg(self.fields['svg_path'])
+        shapes = load_svg(self.fields['svg'])
+        for s in shapes:
+            shape_def = b2PolygonDef()
+            shape_def.setVertices(s['path'])
+            shape_def.density = 1
+            shape_def.friction = 0.7
+            shape_def.restitution = 0.3
+            shape = agent.body.CreateShape(shape_def)
+            shape.SetUserData({'color': s['color']})
         agent.body.SetMassFromShapes()
 
 @contextmanager
@@ -75,14 +83,14 @@ def load_universe(width, height):
     with create_planet(universe) as p:
         p.position = 0, 0
         p.radius = 10000
-        p.color = 0, 0.4, 0
+        p.color = 0, 0.4, 0, 1
 
     with create_player(universe) as a:
         a.id = "player"
-        a.position = 0, 10001
+        a.position = 0, 10004
         a.angle = 0
         a.linear_velocity = 0, 0
         a.angular_velocity = 0
-        a.svg_path = "content/ships/basic.svg"
+        a.svg = "content/ships/basic.svg"
 
     return universe

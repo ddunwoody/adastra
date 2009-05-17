@@ -11,18 +11,18 @@ def get_ref_point(svg):
     element = find(svg)[0]
     return float(element.get('{%s}cx' % SODIPODI_NS)), float(element.get('{%s}cy' % SODIPODI_NS))
 
-def get_shape_elements(svg):
+def get_shape_elements(svg, scale):
     ref_point = get_ref_point(svg)
 
     find = etree.ETXPath('//{%s}path[@id!="ref_point"]' % SVG_NS)
     elements = find(svg)
 
-    def parse_path(points):
+    def parse_path(points, scale):
         points = points.strip('Mz')
         points = points.replace(',', ' ')
         points = points.split('L')
         points = [p.split()[-2:] for p in points]
-        points = [(float(x) - ref_point[0], float(y) - ref_point[1]) for x, y in points]
+        points = [((float(x) - ref_point[0]) * scale, (float(y) - ref_point[1]) * -scale) for x, y in points]
         if points[0] == points[-1]:
             points.pop()
         return points
@@ -40,16 +40,14 @@ def get_shape_elements(svg):
 
     def parse(e):
         return {'id': e.get('id'), 'material': e.get('{%s}label' % INKSCAPE_NS),
-                'path': parse_path(e.get('d')), 'color': get_color(e.get('style'))} 
+                'path': parse_path(e.get('d'), scale), 'color': get_color(e.get('style'))}
 
     return map(parse, elements)
 
 def load_svg(path, scale=0.1):
     svg = etree.parse(path)
 
-    shape_elements = get_shape_elements(svg)
-    for f in shape_elements:
-        print f['id'], f['path']
+    return get_shape_elements(svg, scale)
 
 def main():
     load_svg('/home/david/play/adastra/content/ships/basic.svg')

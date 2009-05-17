@@ -27,7 +27,7 @@ class AdAstraWindow(pyglet.window.Window):
         self.zoom_in = self.zoom_out = False
 
         self.thrust_up = self.thrust_down = self.thrust_left = self.thrust_right = False
-        self.thrust = 12
+        self.thrust = 24
 
         self.universe = load_universe(self.width, self.height)
         self.world = self.universe.world
@@ -39,7 +39,7 @@ class AdAstraWindow(pyglet.window.Window):
 
         if player:
             player_pos = player.body.position
-#            self.camera_pos = player_pos.tuple()
+            self.camera_pos = player_pos.tuple()
             distance_sq = player_pos.LengthSquared()
             force = player_pos.copy()
             force.mul_float(-100000 / distance_sq)
@@ -101,8 +101,8 @@ class AdAstraWindow(pyglet.window.Window):
         glTranslated(p.x, p.y, 0)
         glRotated(a * 180 / math.pi, 0, 0, 1)
         data = shape.GetUserData() or {}
-        color = data.get('color', (1, 1, 1))
-        glColor3f(*color)
+        color = data.get('color', (1, 1, 1, 1))
+        glColor4f(*color)
         polygon = shape.asPolygon()
         circle = shape.asCircle()
         if polygon:
