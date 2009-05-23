@@ -4,9 +4,13 @@ from adastra.svg_loader import load_svg
 
 class Test(unittest.TestCase):
 
-    def testSized(self):
+    def testSize(self):
         size = load_svg('sized.svg').size
         self.assertEqual(size, (123,456))
+
+    def testReferencePoint(self):
+        reference_point = load_svg('reference_point.svg').reference_point
+        self.assertEqual(reference_point, (100, 120))
 
     def testTrianglePath(self):
         path = load_svg('triangle_path.svg').paths[0]
@@ -30,6 +34,6 @@ class Test(unittest.TestCase):
         self.assertEqual(paths[0].points, [(100,100), (50,150), (150,150)])
         self.assertEqual(paths[1].points, [(200,200), (50,250), (250,250)])
         
-    def testReferencePoint(self):
-        reference_point = load_svg('reference_point.svg').reference_point
-        self.assertEqual(reference_point, (100, 120))
+    def testInkscapeLabelledPath(self):
+        path = load_svg('inkscape_labelled_path.svg').paths[0]
+        self.assertEqual(path.label, 'foo')

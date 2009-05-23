@@ -4,6 +4,8 @@ from lxml import etree
 import re
 
 def load_svg(path):
+    INKSCAPE_NS = 'http://www.inkscape.org/namespaces/inkscape'
+
     tree = etree.parse(path)
     xpath = etree.XPathEvaluator(tree)
 
@@ -24,6 +26,9 @@ def load_svg(path):
                 path.fill = style['fill']
             if style.has_key('stroke'):
                 path.stroke = style['stroke']
+
+        if element.attrib.has_key('{%s}label' % INKSCAPE_NS):
+            path.label = element.get('{%s}label' % INKSCAPE_NS)
 
         svg.paths.append(path)
     return svg
