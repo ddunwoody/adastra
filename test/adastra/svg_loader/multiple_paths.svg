@@ -1,9 +1,6 @@
 <svg
-  xmlns="http://www.w3.org/2000/svg"
   width="300"
   height="300">
-  <g>
-    <path d="M 100,100 L 50,150 L 150,150 z" />
-    <path d="M 200,200 L 50,150 L 250,250 z" />
-  </g>
+  <path d="M 100,100 L 50,150 L 150,150 z" />
+  <path d="M 200,200 L 50,250 L 250,250 z" />
 </svg>
