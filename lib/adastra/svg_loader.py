@@ -16,4 +16,4 @@ def load_svg(path):
             path.fill = style['fill']
         if style.has_key('stroke'):
             path.stroke = style['stroke']
-    return path
+    return [path]
