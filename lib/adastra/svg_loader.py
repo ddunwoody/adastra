@@ -22,10 +22,8 @@ def load_svg(path):
 
         if element.attrib.has_key('style'):
             style = dict(kv.split(':') for kv in element.get('style').split(';'))
-            if style.has_key('fill'):
-                path.fill = style['fill']
-            if style.has_key('stroke'):
-                path.stroke = style['stroke']
+            path.fill = style.get('fill')
+            path.stroke = style.get('stroke')
 
         path.label = element.get('{%s}label' % INKSCAPE_NS)
         path.id = element.get('id')
