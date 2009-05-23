@@ -1,4 +1,4 @@
-from adastra.Path import *
+from adastra.svg.Path import *
 from lxml import etree
 import re
 
