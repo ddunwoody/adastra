@@ -19,3 +19,9 @@ class SvgLoaderTest(unittest.TestCase):
     def testStrokedPath(self):
         paths = load_svg ('stroked_path.svg')
         self.assertEqual(paths[0].stroke, '#998877')
+
+    def testMultiplePaths(self):
+        paths = load_svg ('multiple_paths.svg')
+        self.assertEqual(len(paths), 2)
+        self.assertEqual(paths[0].points, [(100,100), (50,150), (150,150)])
+        self.assertEqual(paths[1].points, [(200,200), (50,150), (250,250)])
