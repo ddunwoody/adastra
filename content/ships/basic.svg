@@ -1,38 +1,26 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   id="svg2"
-   version="1.0"
-   width="400"
-   height="400">
-  <g
-     id="shapes"
-     inkscape:groupmode="layer">
-    <path
-       id="command_module"
-       d="M 100,310 L 80,270 L 60,310 L 100,310 z"
-       style="fill:#969778;stroke:#000000"
-       inkscape:label="metal" />
-    <path
-       id="service_module"
-       d="M 100,310 L 60,310 L 70,330 L 90,330 L 100,310 z"
-       style="fill:#969778;stroke:#000000"
-       inkscape:label="metal" />
-    <path
-       id="r_wing"
-       d="M 110,350 L 100,310 L 90,330 L 110,350 z"
-       style="fill:#33a834;stroke:#000000"
-       inkscape:label="wing" />
-    <path
-       id="l_wing"
-       d="M 50,350 L 70,330 L 60,310 L 50,350 z"
-       style="fill:#d7392e;stroke:#000000"
-       inkscape:label="wing" />
-    <path
-       id="ref_point"
-       d="M 85,310 A 5,5 0 1 1 75,310 A 5,5 0 1 1 85,310 z"
-       style="fill:#000000" />
-  </g>
+  xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+  width="400"
+  height="400">
+  <path
+    id="command_module"
+    d="M 100,310 L 80,270 L 60,310 L 100,310 z"
+    style="fill:#969778;stroke:#000000"
+    inkscape:label="metal" />
+  <path
+    id="service_module"
+    d="M 100,310 L 60,310 L 70,330 L 90,330 L 100,310 z"
+    style="fill:#969778;stroke:#000000"
+    inkscape:label="metal" />
+  <path
+    id="r_wing"
+    d="M 110,350 L 100,310 L 90,330 L 110,350 z"
+    style="fill:#33a834;stroke:#000000"
+    inkscape:label="wing" />
+  <path
+    id="l_wing"
+    d="M 50,350 L 70,330 L 60,310 L 50,350 z"
+    style="fill:#d7392e;stroke:#000000"
+    inkscape:label="wing" />
+  <circle cx="80" cy="310" r="5" />
 </svg>
