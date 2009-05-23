@@ -20,7 +20,7 @@ def load_svg(path):
         path.points = [tuple(float(p) for p in match.group().split(','))
                        for match in re.finditer('[-.\d,]+', element.get('d'))]
 
-        if element.attrib.has_key('style'):
+        if 'style' in element.keys():
             style = dict(kv.split(':') for kv in element.get('style').split(';'))
             path.fill = style.get('fill')
             path.stroke = style.get('stroke')
