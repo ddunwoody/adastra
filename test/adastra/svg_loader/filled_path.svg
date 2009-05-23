@@ -1,4 +1,7 @@
-<svg>
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="200"
+  height="200">
   <g>
     <path d="M 100,100 L 50,150 L 150,150 z"
           style="fill:#ABCDEF" />
