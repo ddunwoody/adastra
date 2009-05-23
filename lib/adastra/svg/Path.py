@@ -4,3 +4,4 @@ class Path(object):
         self.fill = None
         self.stroke = None
         self.label = None
+        self.id = None

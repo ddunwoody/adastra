@@ -37,3 +37,7 @@ class Test(unittest.TestCase):
     def testInkscapeLabelledPath(self):
         path = load_svg('inkscape_labelled_path.svg').paths[0]
         self.assertEqual(path.label, 'foo')
+
+    def testPathWithID(self):
+        path = load_svg('path_with_id.svg').paths[0]
+        self.assertEqual(path.id, 'id_value')

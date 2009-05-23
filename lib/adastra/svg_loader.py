@@ -27,8 +27,8 @@ def load_svg(path):
             if style.has_key('stroke'):
                 path.stroke = style['stroke']
 
-        if element.attrib.has_key('{%s}label' % INKSCAPE_NS):
-            path.label = element.get('{%s}label' % INKSCAPE_NS)
+        path.label = element.get('{%s}label' % INKSCAPE_NS)
+        path.id = element.get('id')
 
         svg.paths.append(path)
     return svg
