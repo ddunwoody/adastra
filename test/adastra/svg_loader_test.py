@@ -1,8 +1,8 @@
 import unittest
 
-from adastra.SvgLoader import *
+from adastra.svg_loader import load_svg
 
-class Test(unittest.TestCase):
+class SvgLoaderTest(unittest.TestCase):
 
     def testTrianglePath(self):
         path = load_path('triangle_path.svg')
@@ -21,4 +21,4 @@ class Test(unittest.TestCase):
         self.assertEqual(path.stroke, '#998877')
 
 def load_path(path):
-    return SvgLoader(path).parse()
+    return load_svg(path)
