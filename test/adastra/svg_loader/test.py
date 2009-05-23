@@ -2,7 +2,7 @@ import unittest
 
 from adastra.svg_loader import load_svg
 
-class SvgLoaderTest(unittest.TestCase):
+class Test(unittest.TestCase):
 
     def testTrianglePath(self):
         paths = load_svg('triangle_path.svg')
