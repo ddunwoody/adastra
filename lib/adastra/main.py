@@ -1,9 +1,10 @@
 from __future__ import division
 
-import pyglet, math
-from pyglet.gl import *
 from Box2D import *
 from adastra.universe import load_universe
+import pyglet
+from pyglet.gl import *
+import math
 
 class AdAstraWindow(pyglet.window.Window):
     def __init__(self):

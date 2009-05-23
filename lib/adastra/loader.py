@@ -1,6 +1,8 @@
 from __future__ import division
 
+from adastra import config
 from lxml import etree
+import os
 
 SVG_NS = 'http://www.w3.org/2000/svg'
 SODIPODI_NS = 'http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd'
@@ -18,7 +20,7 @@ def get_shape_elements(svg, scale):
     elements = find(svg)
 
     def parse_path(points, scale):
-        points = points.strip('Mz')
+        points = points.strip('Mz ')
         points = points.replace(',', ' ')
         points = points.split('L')
         points = [p.split()[-2:] for p in points]
@@ -45,6 +47,6 @@ def get_shape_elements(svg, scale):
     return map(parse, elements)
 
 def load_svg(path, scale=0.1):
-    svg = etree.parse(path)
+    svg = etree.parse(os.path.join(config.root, path))
 
     return get_shape_elements(svg, scale)
