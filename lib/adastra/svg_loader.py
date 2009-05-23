@@ -5,15 +5,15 @@ import re
 
 def load_svg(path):
     tree = etree.parse(path)
-    xpath = etree.XPathEvaluator(tree, namespaces={'svg': 'http://www.w3.org/2000/svg'})
+    xpath = etree.XPathEvaluator(tree)
 
     svg = Svg()
+    svg.size = float(tree.getroot().attrib['width']), float(tree.getroot().attrib['height'])
 
-    root_attribs = tree.getroot().attrib
-    if root_attribs.has_key('width') and root_attribs.has_key('height'):
-        svg.size = float(root_attribs['width']), float(root_attribs['height'])
+    for element in xpath('//circle'):
+        svg.reference_point = float(element.get('cx')), float(element.get('cy'))
 
-    for element in xpath('//svg:path'):
+    for element in xpath('//path'):
         path = Path()
         path.points = [tuple(float(p) for p in match.group().split(','))
                        for match in re.finditer('[-.\d,]+', element.get('d'))]

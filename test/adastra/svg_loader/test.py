@@ -28,4 +28,8 @@ class Test(unittest.TestCase):
         paths = load_svg('multiple_paths.svg').paths
         self.assertEqual(len(paths), 2)
         self.assertEqual(paths[0].points, [(100,100), (50,150), (150,150)])
-        self.assertEqual(paths[1].points, [(200,200), (50,150), (250,250)])
+        self.assertEqual(paths[1].points, [(200,200), (50,250), (250,250)])
+        
+    def testReferencePoint(self):
+        reference_point = load_svg('reference_point.svg').reference_point
+        self.assertEqual(reference_point, (100, 120))
