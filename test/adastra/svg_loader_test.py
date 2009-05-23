@@ -17,5 +17,5 @@ class SvgLoaderTest(unittest.TestCase):
         self.assertEqual(path.fill, '#ABCDEF')
 
     def testStrokedPath(self):
-        path = load_svg('stroked_path.svg')
+        path = load_svg ('stroked_path.svg')
         self.assertEqual(path.stroke, '#998877')
