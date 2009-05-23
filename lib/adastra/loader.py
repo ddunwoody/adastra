@@ -5,13 +5,13 @@ from lxml import etree
 import os
 
 SVG_NS = 'http://www.w3.org/2000/svg'
-SODIPODI_NS = 'http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd'
 INKSCAPE_NS = 'http://www.inkscape.org/namespaces/inkscape'
 
 def get_ref_point(svg):
     find = etree.ETXPath('//{%s}path[@id="ref_point"]' % SVG_NS)
     element = find(svg)[0]
-    return float(element.get('{%s}cx' % SODIPODI_NS)), float(element.get('{%s}cy' % SODIPODI_NS))
+    d = element.get('d').split(' ')[1].split(',')
+    return float(d[0]) - 5, float(d[1])
 
 def get_shape_elements(svg, scale):
     ref_point = get_ref_point(svg)
@@ -34,11 +34,11 @@ def get_shape_elements(svg, scale):
             k, v = kv.split(':')
             return k.strip(), v.strip()
 
-        def parse_color(rgb, opacity):
-            return int(rgb[1:3], 16) / 255, int(rgb[3:5], 16) / 255, int(rgb[5:7], 16) / 255, float(opacity)
+        def parse_color(rgb):
+            return int(rgb[1:3], 16) / 255, int(rgb[3:5], 16) / 255, int(rgb[5:7], 16) / 255
         
         data = dict(parse_kv(kv) for kv in style.split(';'))
-        return parse_color(data['fill'], data['fill-opacity'])
+        return parse_color(data['fill'])
 
     def parse(e):
         return {'id': e.get('id'), 'material': e.get('{%s}label' % INKSCAPE_NS),

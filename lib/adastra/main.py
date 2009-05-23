@@ -102,8 +102,8 @@ class AdAstraWindow(pyglet.window.Window):
         glTranslated(p.x, p.y, 0)
         glRotated(a * 180 / math.pi, 0, 0, 1)
         data = shape.GetUserData() or {}
-        color = data.get('color', (1, 1, 1, 1))
-        glColor4f(*color)
+        color = data.get('color', (1, 1, 1))
+        glColor3f(*color)
         polygon = shape.asPolygon()
         circle = shape.asCircle()
         if polygon:
