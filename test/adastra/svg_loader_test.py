@@ -1,3 +1,5 @@
+from __future__ import division
+
 import unittest
 
 from adastra.svg_loader import load_svg
@@ -18,11 +20,11 @@ class SvgLoaderTest(unittest.TestCase):
 
     def testFilledPath(self):
         path = load_svg('svg_loader/filled_path.svg').paths[0]
-        self.assertEqual(path.fill, '#ABCDEF')
+        self.assertEqual(path.fill, (1, 0, 1))
 
     def testStrokedPath(self):
         path = load_svg('svg_loader/stroked_path.svg').paths[0]
-        self.assertEqual(path.stroke, '#998877')
+        self.assertEqual(path.stroke, (0, 1, 0))
 
     def testMultiplePaths(self):
         paths = load_svg('svg_loader/multiple_paths.svg').paths
@@ -50,3 +52,4 @@ class SvgLoaderTest(unittest.TestCase):
         svg = load_svg('svg_loader/scaled_and_translated.svg')
         self.assertEqual(svg.scale, 0.2)
         self.assertEqual(svg.translate, (-100, 150))
+

@@ -1,3 +1,5 @@
+from __future__ import division
+
 from adastra.svg.Path import *
 from adastra.svg.Svg import *
 from lxml import etree
@@ -30,11 +32,16 @@ def load_svg(path):
 
         if 'style' in element.keys():
             style = dict(kv.split(':') for kv in element.get('style').split(';'))
-            path.fill = style.get('fill')
-            path.stroke = style.get('stroke')
+            path.fill = parse_color(style.get('fill'))
+            path.stroke = parse_color(style.get('stroke'))
 
         path.label = element.get('{%s}label' % INKSCAPE_NS)
         path.id = element.get('id')
 
         svg.paths.append(path)
     return svg
+
+def parse_color(color):
+    if color is None:
+        return None
+    return int(color[1:3], 16) / 255, int(color[3:5], 16) / 255, int(color[5:7], 16) / 255
