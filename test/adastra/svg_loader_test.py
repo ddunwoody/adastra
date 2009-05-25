@@ -8,10 +8,6 @@ class SvgLoaderTest(unittest.TestCase):
         size = load_svg('svg_loader/sized.svg').size
         self.assertEqual(size, (123,456))
 
-    def testReferencePoint(self):
-        reference_point = load_svg('svg_loader/reference_point.svg').reference_point
-        self.assertEqual(reference_point, (100, 120))
-
     def testTrianglePath(self):
         path = load_svg('svg_loader/triangle_path.svg').paths[0]
         self.assertEqual(path.points, [(100,100), (50,150), (150,150)])
