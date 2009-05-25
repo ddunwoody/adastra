@@ -9,6 +9,7 @@ class Svg(object):
         self.paths = []
         self._translated_paths = None
 
+    # subtracts reference_point from the points in the paths
     def translated_paths(self):
         if self._translated_paths is not None:
             return self._translated_paths
