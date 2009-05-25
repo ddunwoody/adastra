@@ -38,7 +38,7 @@ def save_svg(svg, file):
             element.set('id', path.id)
             
         
-    ElementTree(root).write(file)
+    ElementTree(root).write(file, pretty_print=True)
     
 def tuple_to_str(t):
     return "%.f,%.f" % (t[0], t[1])
