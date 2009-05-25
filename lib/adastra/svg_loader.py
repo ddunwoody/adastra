@@ -12,6 +12,15 @@ def load_svg(path):
     svg = Svg()
     svg.size = float(tree.getroot().attrib['width']), float(tree.getroot().attrib['height'])
 
+    for element in xpath('/svg/g'):
+        if 'transform' in element.keys():
+            match = re.search('scale\(([-\d.]+)\)', element.get('transform'))
+            if match is not None:
+                svg.scale = float(match.group(1))
+            match = re.search('translate\(([-\d., ]+)\)', element.get('transform'))
+            if match is not None:
+                svg.translate = tuple(float(x) for x in match.group(1).split(','))
+
     for element in xpath('//circle'):
         svg.reference_point = float(element.get('cx')), float(element.get('cy'))
 

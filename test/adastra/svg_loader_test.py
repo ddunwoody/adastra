@@ -41,3 +41,16 @@ class SvgLoaderTest(unittest.TestCase):
     def testPathWithID(self):
         path = load_svg('svg_loader/path_with_id.svg').paths[0]
         self.assertEqual(path.id, 'id_value')
+
+    def testScaled(self):
+        scale = load_svg('svg_loader/scaled.svg').scale
+        self.assertEqual(scale, 0.2)
+
+    def testTranslated(self):
+        translate = load_svg('svg_loader/translated.svg').translate
+        self.assertEqual(translate, (-100, 150))
+
+    def testScaledAndTranslated(self):
+        svg = load_svg('svg_loader/scaled_and_translated.svg')
+        self.assertEqual(svg.scale, 0.2)
+        self.assertEqual(svg.translate, (-100, 150))

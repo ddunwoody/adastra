@@ -7,6 +7,8 @@ class Svg(object):
         self.size = None
         self.reference_point = None
         self.paths = []
+        self.scale = None
+        self.translate = None
         self._translated_paths = None
 
     # subtracts reference_point from the points in the paths
