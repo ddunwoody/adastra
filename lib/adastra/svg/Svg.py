@@ -16,10 +16,15 @@ class Svg(object):
             return self._transformed_paths
         
         self._transformed_paths = copy.deepcopy(self.paths)
+
         for path in self._transformed_paths:
             transformed_points = []
             for x, y in path.points:
-                transformed_points.append((x - self.translate[0], y - self.translate[1]))
+                if self.translate is not None:
+                    x, y = x+self.translate[0], y+self.translate[1]
+                if self.scale is not None:
+                    x, y = x*self.scale, y*self.scale
+                transformed_points.append((x, y))
             path.points = transformed_points
         
         return self._transformed_paths
