@@ -16,7 +16,7 @@ class SvgLoaderTest(unittest.TestCase):
         
     def testPolygonPath(self):
         path = load_svg('svg_loader/polygon_path.svg').paths[0]
-        self.assertEqual(path.points, [(88.55,89.4), (64,112), (73.01,143.97), (101.50,160.54), (134,151), (125,116), (88.70,89.455613)])
+        self.assertEqual(path.points, [(89, 89), (64, 112), (73, 144), (102, 161), (134, 151), (125, 116)])
 
     def testFilledPath(self):
         path = load_svg('svg_loader/filled_path.svg').paths[0]

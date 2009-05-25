@@ -1,6 +1,6 @@
-<svg
+<svg xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
   width="100"
   height="100">
-  <path id="id_value" 
-        d="M 10,10 L 20,5 L 40,30 z" />
+  <path d="M 10,10 L 20,5 L 40,30 z"
+        id="id_value" />
 </svg>

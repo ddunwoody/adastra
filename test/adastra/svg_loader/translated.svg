@@ -1,5 +1,5 @@
-<svg
+<svg xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
   width="123"
   height="456">
-  <g transform="translate(-100, 150)" />
+  <g transform="translate(-100,150)" />
 </svg>
