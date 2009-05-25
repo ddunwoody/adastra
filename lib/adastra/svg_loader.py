@@ -16,9 +16,8 @@ def load_svg(path):
         svg.reference_point = float(element.get('cx')), float(element.get('cy'))
 
     for element in xpath('//path'):
-        path = Path()
-        path.points = [tuple(float(p) for p in match.group().split(','))
-                       for match in re.finditer('[-.\d,]+', element.get('d'))]
+        path = Path(points=[tuple(float(p) for p in match.group().split(','))
+                            for match in re.finditer('[-.\d,]+', element.get('d'))])
 
         if 'style' in element.keys():
             style = dict(kv.split(':') for kv in element.get('style').split(';'))
