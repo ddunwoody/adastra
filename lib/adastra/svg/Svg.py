@@ -10,14 +10,11 @@ class Svg(object):
         self.translate = None
         self._transformed_paths = None
 
-    # subtracts reference_point from the points in the paths
+    # returns a copy of paths with scale and translate applied
     def transformed_paths(self):
-        if self._transformed_paths is not None:
-            return self._transformed_paths
-        
-        self._transformed_paths = copy.deepcopy(self.paths)
+        paths = copy.deepcopy(self.paths)
 
-        for path in self._transformed_paths:
+        for path in paths:
             transformed_points = []
             for x, y in path.points:
                 if self.translate is not None:
@@ -27,4 +24,4 @@ class Svg(object):
                 transformed_points.append((x, y))
             path.points = transformed_points
         
-        return self._transformed_paths
+        return paths
