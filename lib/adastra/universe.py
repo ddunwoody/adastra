@@ -1,10 +1,13 @@
 from __future__ import with_statement
-from contextlib import contextmanager
+
+from adastra.agent import Agent
+from adastra.config import get_path
+from adastra.svg_loader import load_svg
 
 from Box2D import *
-from adastra.agent import Agent
-from adastra.loader import load_svg
 
+from contextlib import contextmanager
+import os
 
 class Universe(object):
     def __init__(self, world):
@@ -50,15 +53,15 @@ class Player(Planet):
         agent.body = universe.world.CreateBody(body_def)
         agent.body.SetLinearVelocity(self.fields['linear_velocity'])
         agent.body.SetAngularVelocity(self.fields['angular_velocity'])
-        shapes = load_svg(self.fields['svg'])
-        for s in shapes:
+        svg = load_svg(self.fields['svg'])
+        for path in svg.transformed_paths():
             shape_def = b2PolygonDef()
-            shape_def.setVertices(s['path'])
+            shape_def.setVertices(path.points)
             shape_def.density = 1
             shape_def.friction = 0.7
             shape_def.restitution = 0.3
             shape = agent.body.CreateShape(shape_def)
-            shape.SetUserData({'color': s['color']})
+            shape.SetUserData({'color': path.fill})
         agent.body.SetMassFromShapes()
 
 @contextmanager
@@ -91,6 +94,6 @@ def load_universe(width, height):
         a.angle = 0
         a.linear_velocity = 0, 0
         a.angular_velocity = 0
-        a.svg = "content/ships/basic.svg"
+        a.svg = get_path('content/ships/basic.svg')
 
     return universe
