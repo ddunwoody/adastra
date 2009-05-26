@@ -2,8 +2,7 @@ from __future__ import with_statement
 
 from adastra.agent import Agent
 from adastra.config import get_path
-from adastra.svg_loader import load_svg
-from adastra.svg_saver import save_svg
+import adastra.svg.store as store
 
 from Box2D import *
 
@@ -54,8 +53,8 @@ class Player(Planet):
         agent.body = universe.world.CreateBody(body_def)
         agent.body.SetLinearVelocity(self.fields['linear_velocity'])
         agent.body.SetAngularVelocity(self.fields['angular_velocity'])
-        svg = load_svg(self.fields['svg'])
-        save_svg(svg, self.fields['svg'])
+        svg = store.load(self.fields['svg'])
+        store.save(svg, self.fields['svg'])
         for path in svg.transformed_paths():
             shape_def = b2PolygonDef()
             shape_def.setVertices(path.points)
