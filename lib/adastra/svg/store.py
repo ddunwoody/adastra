@@ -1,7 +1,9 @@
 from __future__ import division
 
+from adastra.svg.Group import *
 from adastra.svg.Path import *
 from adastra.svg.Svg import *
+
 from lxml import etree
 from lxml.etree import ElementTree 
 import re
@@ -15,6 +17,7 @@ def load(path):
     svg = Svg()
     svg.size = float(tree.getroot().attrib['width']), float(tree.getroot().attrib['height'])
 
+    # Parse top-level transform
     for element in xpath('/svg/g'):
         if 'transform' in element.keys():
             match = re.search('scale\(([-\d.]+)\)', element.get('transform'))
@@ -24,22 +27,28 @@ def load(path):
             if match is not None:
                 svg.translate = tuple(float(x) for x in match.group(1).split(','))
 
-    for element in xpath('//path'):
-        path = Path(points=[tuple(float(p) for p in match.group().split(','))
-                            for match in re.finditer('[-.\d,]+', element.get('d'))])
-        if path.points[-1] == path.points[0]:
-            path.points.pop()
+    # Parse each group
+    for g in xpath('/svg/g/g'):
+        group = Group()
+        svg.groups[g.get('id')] = group
 
+        # Parse each path in group
+        for path_elem in g.getiterator('path'):
+            path = Path(points=[tuple(float(p) for p in match.group().split(','))
+                                for match in re.finditer('[-.\d,]+', path_elem.get('d'))])
+            if path.points[-1] == path.points[0]:
+                path.points.pop()
+    
+            if 'style' in path_elem.keys():
+                style = dict(kv.split(':') for kv in path_elem.get('style').split(';'))
+                path.fill = _hex_to_color(style.get('fill'))
+                path.stroke = _hex_to_color(style.get('stroke'))
+    
+            path.label = path_elem.get('{%s}label' % INKSCAPE_NS)
+            path.id = path_elem.get('id')
+    
+            group.paths.append(path)
 
-        if 'style' in element.keys():
-            style = dict(kv.split(':') for kv in element.get('style').split(';'))
-            path.fill = _hex_to_color(style.get('fill'))
-            path.stroke = _hex_to_color(style.get('stroke'))
-
-        path.label = element.get('{%s}label' % INKSCAPE_NS)
-        path.id = element.get('id')
-
-        svg.paths.append(path)
     return svg
 
 def save(svg, file):

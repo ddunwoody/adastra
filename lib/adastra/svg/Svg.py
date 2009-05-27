@@ -8,7 +8,6 @@ class Svg(object):
         self.groups = {}
         self.scale = 1
         self.translate = (0, 0)
-        self._transformed_paths = None
 
     # returns a copy of paths in group with scale and translate applied
     # flips y-axis to convert from SVG to Box2D coordinate system

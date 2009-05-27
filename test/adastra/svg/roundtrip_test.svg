@@ -1,6 +1,11 @@
 <svg xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="450" height="400">
   <g transform="scale(0.1) translate(-80,-310)">
-    <path d="M 100,310 L 80,270 L 60,310 z" style="stroke:#00FF00;fill:#FF00FF" inkscape:label="metal" id="command_module"/>
-    <path d="M 110,350 L 100,310 L 90,330 z" />
+    <g id="foo">
+	  <path d="M 100,310 L 80,270 L 60,310 z" style="stroke:#00FF00;fill:#FF00FF" inkscape:label="metal" id="command_module"/>
+      <path d="M 110,350 L 100,310 L 90,330 z" />
+    </g>
+    <g id="bar">
+      <path d="M 1,2 L 3,4 L 90,330 L 5,6 z" />
+    </g>
   </g>
 </svg>

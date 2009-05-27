@@ -13,39 +13,10 @@ class StoreTest(unittest.TestCase):
     
     def setUp(self):
         self.svg = store.load('store_test.svg')
+        self.paths = self.svg.groups['foo'].paths
 
-    def testSvgSize(self):
+    def testSize(self):
         self.assertEqual(self.svg.size, (450,400))
-
-    def testPathPoints(self):
-        self.assertEqual(self.svg.paths[0].points, [(100,310), (80,270), (60,310)])
-
-    def testClosedPathRemovesFinalPoint(self):
-        self.assertEqual(self.svg.paths[1].points, [(110,350), (100,310), (90,330)])
-        
-    def testFilledPath(self):
-        self.assertEqual(self.svg.paths[0].fill, (1, 0, 1))
-
-    def testUnfilledPath(self):
-        self.assertEqual(self.svg.paths[1].fill, None)
-
-    def testStrokedPath(self):
-        self.assertEqual(self.svg.paths[0].stroke, (0, 1, 0))
-
-    def testUnstrokedPath(self):
-        self.assertEqual(self.svg.paths[1].stroke, None)
-
-    def testLabelledPath(self):
-        self.assertEqual(self.svg.paths[0].label, 'metal')
-
-    def testUnlabelledPath(self):
-        self.assertEqual(self.svg.paths[1].label, None)
-
-    def testPathWithID(self):
-        self.assertEqual(self.svg.paths[0].id, 'command_module')
-
-    def testPathWithoutID(self):
-        self.assertEqual(self.svg.paths[1].id, None)
 
     def testScale(self):
         self.assertEqual(self.svg.scale, 0.1)
@@ -53,13 +24,47 @@ class StoreTest(unittest.TestCase):
     def testTranslate(self):
         self.assertEqual(self.svg.translate, (-80, -310))
 
-    def testRoundTrip(self):
-        filename = 'roundtrip_test.svg'
-        tempfile = TemporaryFile()
-        store.save(store.load(filename), tempfile)
-        tempfile.seek(0)
+    def testPathPoints(self):
+        self.assertEqual(self.paths[0].points, [(100,310), (80,270), (60,310)])
 
-        old_svg_xml = etree.parse(filename)
-        new_svg_xml = etree.parse(tempfile)
-        self.assertEqual(etree.tostring(new_svg_xml, pretty_print=True), 
-                         etree.tostring(old_svg_xml, pretty_print=True))
+    def testClosedPathRemovesFinalPoint(self):
+        self.assertEqual(self.paths[1].points, [(110,350), (100,310), (90,330)])
+
+        
+    def testFilledPath(self):
+        self.assertEqual(self.paths[0].fill, (1, 0, 1))
+
+    def testUnfilledPath(self):
+        self.assertEqual(self.paths[1].fill, None)
+
+    def testStrokedPath(self):
+        self.assertEqual(self.paths[0].stroke, (0, 1, 0))
+
+    def testUnstrokedPath(self):
+        self.assertEqual(self.paths[1].stroke, None)
+
+    def testLabelledPath(self):
+        self.assertEqual(self.paths[0].label, 'metal')
+
+    def testUnlabelledPath(self):
+        self.assertEqual(self.paths[1].label, None)
+
+    def testPathWithID(self):
+        self.assertEqual(self.paths[0].id, 'command_module')
+
+    def testPathWithoutID(self):
+        self.assertEqual(self.paths[1].id, None)
+
+    def testPathFromSecondGroup(self):
+        self.assertEqual(self.svg.groups['bar'].paths[0].points, [(1,2), (3,4), (5,6)])
+
+#    def testRoundTrip(self):
+#        filename = 'roundtrip_test.svg'
+#        tempfile = TemporaryFile()
+#        store.save(store.load(filename), tempfile)
+#        tempfile.seek(0)
+#
+#        old_svg_xml = etree.parse(filename)
+#        new_svg_xml = etree.parse(tempfile)
+#        self.assertEqual(etree.tostring(new_svg_xml, pretty_print=True), 
+#                         etree.tostring(old_svg_xml, pretty_print=True))
