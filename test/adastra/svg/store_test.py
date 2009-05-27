@@ -43,12 +43,6 @@ class StoreTest(unittest.TestCase):
     def testUnstrokedPath(self):
         self.assertEqual(self.paths[1].stroke, None)
 
-    def testLabelledPath(self):
-        self.assertEqual(self.paths[0].label, 'metal')
-
-    def testUnlabelledPath(self):
-        self.assertEqual(self.paths[1].label, None)
-
     def testPathWithID(self):
         self.assertEqual(self.paths[0].id, 'command_module')
 
@@ -57,6 +51,17 @@ class StoreTest(unittest.TestCase):
 
     def testPathFromSecondGroup(self):
         self.assertEqual(self.svg.groups['bar'].paths[0].points, [(1,2), (3,4), (5,6)])
+
+    def testPathWithoutData(self):
+        self.assertEqual(self.paths[1].data, None)
+
+    def testPathWithSingleDataItem(self):
+        data = self.paths[0].data
+        self.assertEqual(data, {'key': 'value'})
+
+    def testPathWithMultipleDataItems(self):
+        data = self.svg.groups['bar'].paths[0].data
+        self.assertEqual(data, {'key1': 'value1', 'key2': 'value2'})
 
     def testRoundTrip(self):
         filename = 'roundtrip_test.svg'

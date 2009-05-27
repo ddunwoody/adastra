@@ -40,11 +40,14 @@ def load(path):
                 path.points.pop()
     
             if 'style' in path_elem.keys():
-                style = dict(kv.split(':') for kv in path_elem.get('style').split(';'))
+                style = _unpack(path_elem.get('style'))
                 path.fill = _hex_to_color(style.get('fill'))
                 path.stroke = _hex_to_color(style.get('stroke'))
     
-            path.label = path_elem.get('{%s}label' % INKSCAPE_NS)
+            label = path_elem.get('{%s}label' % INKSCAPE_NS)
+            if label is not None:
+                path.data = _unpack(label)
+
             path.id = path_elem.get('id')
     
             group.paths.append(path)
@@ -82,10 +85,10 @@ def save(svg, file):
             if path.stroke:
                 style['stroke'] = _color_to_hex(path.stroke)
             if len(style) > 0:
-                path_elem.set('style', ';'.join([':'.join(kv) for kv in style.items()]))
+                path_elem.set('style', _pack(style))
     
-            if path.label:
-                path_elem.set('{http://www.inkscape.org/namespaces/inkscape}label', path.label)
+            if path.data:
+                path_elem.set('{http://www.inkscape.org/namespaces/inkscape}label', _pack(path.data))
             if path.id:
                 path_elem.set('id', path.id)
             
@@ -104,4 +107,8 @@ def _color_to_hex(color):
     def mul(x): return x * 255
     return "#%02X%02X%02X" % tuple(map(mul, color))
 
+def _unpack(data):
+    return dict(kv.split(':') for kv in data.split(';'))
 
+def _pack(data):
+    return ';'.join([':'.join(kv) for kv in data.items()])

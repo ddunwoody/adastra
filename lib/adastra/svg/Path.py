@@ -3,5 +3,5 @@ class Path(object):
         self.points = points
         self.fill = None
         self.stroke = None
-        self.label = None
+        self.data = None
         self.id = None
