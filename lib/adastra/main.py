@@ -27,8 +27,8 @@ class AdAstraWindow(pyglet.window.Window):
         self.max_camera_height = 100000
         self.zoom_in = self.zoom_out = False
 
-        self.thrust_up = self.thrust_down = self.thrust_left = self.thrust_right = False
-        self.thrust = 24
+        self.thrust_up = self.thrust_ccw = self.thrust_cw = False
+        self.thrust = 300
 
         self.universe = load_universe(self.width, self.height)
         self.world = self.universe.world
@@ -39,20 +39,18 @@ class AdAstraWindow(pyglet.window.Window):
         player = self.universe.agents['player']
 
         if player:
-            player_pos = player.body.position
+            player_pos = player.body.GetWorldCenter()
             self.camera_pos = player_pos.tuple()
             distance_sq = player_pos.LengthSquared()
             force = player_pos.copy()
-            force.mul_float(-10000 / distance_sq)
+            force.mul_float(-100000 / distance_sq)
             player.body.ApplyForce(force, player_pos)
             if self.thrust_up:
-                player.body.ApplyForce((0, self.thrust), player_pos)
-            if self.thrust_down:
-                player.body.ApplyForce((0, -self.thrust), player_pos)
-            if self.thrust_left:
-                player.body.ApplyForce((-self.thrust, 0), player_pos)
-            if self.thrust_right:
-                player.body.ApplyForce((self.thrust, 0), player_pos)
+                player.body.ApplyForce(player.body.GetWorldVector((0, self.thrust)), player_pos)
+            if self.thrust_ccw:
+                player.body.ApplyTorque(self.thrust/2)
+            if self.thrust_cw:
+                player.body.ApplyTorque(-self.thrust/2)
 
         if self.zoom_in:
             self.camera_height /= 10 ** dt
@@ -150,12 +148,10 @@ class AdAstraWindow(pyglet.window.Window):
             self.set_fullscreen(not self.fullscreen)
         if symbol == pyglet.window.key.UP:
             self.thrust_up = True
-        if symbol == pyglet.window.key.DOWN:
-            self.thrust_down = True
         if symbol == pyglet.window.key.LEFT:
-            self.thrust_left = True
+            self.thrust_ccw = True
         if symbol == pyglet.window.key.RIGHT:
-            self.thrust_right = True
+            self.thrust_cw = True
 
     def on_key_release(self, symbol, modifiers):
         if symbol == pyglet.window.key.MINUS:
@@ -164,12 +160,10 @@ class AdAstraWindow(pyglet.window.Window):
             self.zoom_in = False
         if symbol == pyglet.window.key.UP:
             self.thrust_up = False
-        if symbol == pyglet.window.key.DOWN:
-            self.thrust_down = False
         if symbol == pyglet.window.key.LEFT:
-            self.thrust_left = False
+            self.thrust_ccw = False
         if symbol == pyglet.window.key.RIGHT:
-            self.thrust_right = False
+            self.thrust_cw = False
 
 def main():
     window = AdAstraWindow()
