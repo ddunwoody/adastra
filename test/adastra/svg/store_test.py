@@ -10,63 +10,56 @@ from lxml.etree import ElementTree
 from tempfile import TemporaryFile
 
 class ContentTest(unittest.TestCase):
+    
+    def setUp(self):
+        self.filename = 'store_test.svg'
+        self.svg = store.load(self.filename)
 
-    def testSize(self):
-        size = store.load('files/sized.svg').size
-        self.assertEqual(size, (123,456))
+    def testSvgSize(self):
+        self.assertEqual(self.svg.size, (450,400))
 
-    def testSvgTrianglePath(self):
-        path = store.load('files/triangle_path.svg').paths[0]
-        self.assertEqual(path.points, [(100,100), (50,150), (150,150)])
+    def testPathPoints(self):
+        self.assertEqual(self.svg.paths[0].points, [(100,310), (80,270), (60,310)])
+
+#    def testClosedPathRemovesFinalPoint(self):
+#        self.assertEqual(self.svg.paths[1].points, [(110,350), (100,310), (90,330)])
         
-    def testPolygonPath(self):
-        path = store.load('files/polygon_path.svg').paths[0]
-        self.assertEqual(path.points, [(89, 89), (64, 112), (73, 144), (102, 161), (134, 151), (125, 116)])
-
     def testFilledPath(self):
-        path = store.load('files/filled_path.svg').paths[0]
-        self.assertEqual(path.fill, (1, 0, 1))
+        self.assertEqual(self.svg.paths[0].fill, (1, 0, 1))
+
+    def testUnfilledPath(self):
+        self.assertEqual(self.svg.paths[1].fill, None)
 
     def testStrokedPath(self):
-        path = store.load('files/stroked_path.svg').paths[0]
-        self.assertEqual(path.stroke, (0, 1, 0))
+        self.assertEqual(self.svg.paths[0].stroke, (0, 1, 0))
 
-    def testMultiplePaths(self):
-        paths = store.load('files/multiple_paths.svg').paths
-        self.assertEqual(len(paths), 2)
-        self.assertEqual(paths[0].points, [(100,100), (50,150), (150,150)])
-        self.assertEqual(paths[1].points, [(200,200), (50,250), (250,250)])
-        
-    def testInkscapeLabelledPath(self):
-        path = store.load('files/inkscape_labelled_path.svg').paths[0]
-        self.assertEqual(path.label, 'foo')
+    def testUnstrokedPath(self):
+        self.assertEqual(self.svg.paths[1].stroke, None)
+
+    def testLabelledPath(self):
+        self.assertEqual(self.svg.paths[0].label, 'metal')
+
+    def testUnlabelledPath(self):
+        self.assertEqual(self.svg.paths[1].label, None)
 
     def testPathWithID(self):
-        path = store.load('files/path_with_id.svg').paths[0]
-        self.assertEqual(path.id, 'id_value')
+        self.assertEqual(self.svg.paths[0].id, 'command_module')
 
-    def testScaled(self):
-        scale = store.load('files/scaled.svg').scale
-        self.assertEqual(scale, 0.2)
+    def testPathWithoutID(self):
+        self.assertEqual(self.svg.paths[1].id, None)
 
-    def testTranslated(self):
-        translate = store.load('files/translated.svg').translate
-        self.assertEqual(translate, (-100, 150))
+    def testScale(self):
+        self.assertEqual(self.svg.scale, 0.1)
 
-    def testScaledAndTranslated(self):
-        svg = store.load('files/scaled_and_translated.svg')
-        self.assertEqual(svg.scale, 0.2)
-        self.assertEqual(svg.translate, (-100, 150))
+    def testTranslate(self):
+        self.assertEqual(self.svg.translate, (-80, -310))
 
     def testRoundTrip(self):
-        for filename in glob.glob('files/*.svg'):
-            loaded_svg = store.load(filename)
-            tempfile = TemporaryFile()
-            store.save(loaded_svg, tempfile)
-            tempfile.seek(0)
-    
-            old_svg_xml = etree.parse(filename)
-            new_svg_xml = etree.parse(tempfile)
-            print 'comparing %s' % filename
-            self.assertEqual(etree.tostring(new_svg_xml, pretty_print=True), 
-                             etree.tostring(old_svg_xml, pretty_print=True))
+        tempfile = TemporaryFile()
+        store.save(self.svg, tempfile)
+        tempfile.seek(0)
+
+        old_svg_xml = etree.parse(self.filename)
+        new_svg_xml = etree.parse(tempfile)
+        self.assertEqual(etree.tostring(new_svg_xml, pretty_print=True), 
+                         etree.tostring(old_svg_xml, pretty_print=True))
