@@ -55,7 +55,7 @@ class Player(Planet):
         agent.body.SetAngularVelocity(self.fields['angular_velocity'])
         svg = store.load(self.fields['svg'])
         store.save(svg, self.fields['svg'])
-        for path in svg.transformed_paths():
+        for path in svg.paths('shapes'):
             shape_def = b2PolygonDef()
             shape_def.setVertices(path.points)
             shape_def.density = 1
