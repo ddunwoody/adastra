@@ -6,5 +6,10 @@
       <path d="M 110,350 L 100,310 L 90,330 z" style="stroke:#000000;fill:#33A834" inkscape:label="material:metal" id="r_wing"/>
       <path d="M 50,350 L 70,330 L 60,310 z" style="stroke:#000000;fill:#D7392E" inkscape:label="material:metal" id="l_wing"/>
     </g>
+    <g id="thrusters">
+      <path d="M 80,350 L 80,330 z" style="stroke:#000000" inkscape:label="thrust:1.5;keys:UP"/>
+      <path d="M 35,350 L 50,350 z" style="stroke:#000000" inkscape:label="thrust:0.5;keys:LEFT"/>
+      <path d="M 125,350 L 110,350 z" style="stroke:#000000" inkscape:label="thrust:0.5;keys:RIGHT"/>
+    </g>
   </g>
 </svg>
