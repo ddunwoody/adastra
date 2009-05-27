@@ -24,9 +24,6 @@ def load(path):
             if match is not None:
                 svg.translate = tuple(float(x) for x in match.group(1).split(','))
 
-    for element in xpath('//circle'):
-        svg.reference_point = float(element.get('cx')), float(element.get('cy'))
-
     for element in xpath('//path'):
         path = Path(points=[tuple(float(p) for p in match.group().split(','))
                             for match in re.finditer('[-.\d,]+', element.get('d'))])
