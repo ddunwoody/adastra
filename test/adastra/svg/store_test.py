@@ -9,11 +9,10 @@ from lxml import etree
 from lxml.etree import ElementTree 
 from tempfile import TemporaryFile
 
-class ContentTest(unittest.TestCase):
+class StoreTest(unittest.TestCase):
     
     def setUp(self):
-        self.filename = 'store_test.svg'
-        self.svg = store.load(self.filename)
+        self.svg = store.load('store_test.svg')
 
     def testSvgSize(self):
         self.assertEqual(self.svg.size, (450,400))
@@ -21,8 +20,8 @@ class ContentTest(unittest.TestCase):
     def testPathPoints(self):
         self.assertEqual(self.svg.paths[0].points, [(100,310), (80,270), (60,310)])
 
-#    def testClosedPathRemovesFinalPoint(self):
-#        self.assertEqual(self.svg.paths[1].points, [(110,350), (100,310), (90,330)])
+    def testClosedPathRemovesFinalPoint(self):
+        self.assertEqual(self.svg.paths[1].points, [(110,350), (100,310), (90,330)])
         
     def testFilledPath(self):
         self.assertEqual(self.svg.paths[0].fill, (1, 0, 1))
@@ -55,11 +54,12 @@ class ContentTest(unittest.TestCase):
         self.assertEqual(self.svg.translate, (-80, -310))
 
     def testRoundTrip(self):
+        filename = 'roundtrip_test.svg'
         tempfile = TemporaryFile()
-        store.save(self.svg, tempfile)
+        store.save(store.load(filename), tempfile)
         tempfile.seek(0)
 
-        old_svg_xml = etree.parse(self.filename)
+        old_svg_xml = etree.parse(filename)
         new_svg_xml = etree.parse(tempfile)
         self.assertEqual(etree.tostring(new_svg_xml, pretty_print=True), 
                          etree.tostring(old_svg_xml, pretty_print=True))
