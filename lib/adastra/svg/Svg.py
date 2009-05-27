@@ -5,15 +5,15 @@ import copy
 class Svg(object):
     def __init__(self):
         self.size = None
-        self.paths = []
+        self.groups = {}
         self.scale = 1
         self.translate = (0, 0)
         self._transformed_paths = None
 
-    # returns a copy of paths with scale and translate applied
+    # returns a copy of paths in group with scale and translate applied
     # flips y-axis to convert from SVG to Box2D coordinate system
-    def transformed_paths(self):
-        paths = copy.deepcopy(self.paths)
+    def paths(self, group):
+        paths = copy.deepcopy(self.groups[group].paths)
 
         for path in paths:
             transformed_points = []
