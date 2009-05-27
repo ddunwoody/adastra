@@ -58,13 +58,13 @@ class StoreTest(unittest.TestCase):
     def testPathFromSecondGroup(self):
         self.assertEqual(self.svg.groups['bar'].paths[0].points, [(1,2), (3,4), (5,6)])
 
-#    def testRoundTrip(self):
-#        filename = 'roundtrip_test.svg'
-#        tempfile = TemporaryFile()
-#        store.save(store.load(filename), tempfile)
-#        tempfile.seek(0)
-#
-#        old_svg_xml = etree.parse(filename)
-#        new_svg_xml = etree.parse(tempfile)
-#        self.assertEqual(etree.tostring(new_svg_xml, pretty_print=True), 
-#                         etree.tostring(old_svg_xml, pretty_print=True))
+    def testRoundTrip(self):
+        filename = 'roundtrip_test.svg'
+        tempfile = TemporaryFile()
+        store.save(store.load(filename), tempfile)
+        tempfile.seek(0)
+
+        old_svg_xml = etree.parse(filename)
+        new_svg_xml = etree.parse(tempfile)
+        self.assertEqual(etree.tostring(new_svg_xml, pretty_print=True), 
+                         etree.tostring(old_svg_xml, pretty_print=True))

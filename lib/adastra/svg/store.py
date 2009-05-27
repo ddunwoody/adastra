@@ -53,7 +53,6 @@ def load(path):
 
 def save(svg, file):
     root = etree.Element('svg', nsmap={'inkscape': 'http://www.inkscape.org/namespaces/inkscape'})
-    parent = root
     root.set('width', str(int(svg.size[0])))
     root.set('height', str(int(svg.size[1])))
 
@@ -63,29 +62,32 @@ def save(svg, file):
     if svg.translate != (0, 0):
         transform += ' translate(%s)' % _tuple_to_str(svg.translate)
     if len(transform) > 0:
-        element = etree.Element('g')
-        root.append(element)
-        element.set('transform', transform.strip())
-        parent = element
+        transform_group = etree.Element('g')
+        root.append(transform_group)
+        transform_group.set('transform', transform.strip())
     
-    for path in svg.paths:
-        element = etree.Element('path')
-        parent.append(element)
-
-        element.set('d', 'M ' + ' L '.join(map(_tuple_to_str, path.points)) + ' z')
-
-        style = {}
-        if path.fill:
-            style['fill'] = _color_to_hex(path.fill)
-        if path.stroke:
-            style['stroke'] = _color_to_hex(path.stroke)
-        if len(style) > 0:
-            element.set('style', ';'.join([':'.join(kv) for kv in style.items()]))
-
-        if path.label:
-            element.set('{http://www.inkscape.org/namespaces/inkscape}label', path.label)
-        if path.id:
-            element.set('id', path.id)
+    for group_id, group in svg.groups.items():
+        group_elem = etree.Element('g')
+        transform_group.append(group_elem)
+        group_elem.set('id', group_id)
+        for path in group.paths:
+            path_elem = etree.Element('path')
+            group_elem.append(path_elem)
+    
+            path_elem.set('d', 'M ' + ' L '.join(map(_tuple_to_str, path.points)) + ' z')
+    
+            style = {}
+            if path.fill:
+                style['fill'] = _color_to_hex(path.fill)
+            if path.stroke:
+                style['stroke'] = _color_to_hex(path.stroke)
+            if len(style) > 0:
+                path_elem.set('style', ';'.join([':'.join(kv) for kv in style.items()]))
+    
+            if path.label:
+                path_elem.set('{http://www.inkscape.org/namespaces/inkscape}label', path.label)
+            if path.id:
+                path_elem.set('id', path.id)
             
         
     ElementTree(root).write(file, pretty_print=True)
