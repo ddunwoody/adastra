@@ -29,6 +29,7 @@ class AdAstraWindow(pyglet.window.Window):
 
         self.thrust_up = self.thrust_ccw = self.thrust_cw = False
         self.thrust = 300
+        self.rot_thrust = 50
 
         self.universe = load_universe(self.width, self.height)
         self.world = self.universe.world
@@ -48,9 +49,9 @@ class AdAstraWindow(pyglet.window.Window):
             if self.thrust_up:
                 player.body.ApplyForce(player.body.GetWorldVector((0, self.thrust)), player_pos)
             if self.thrust_ccw:
-                player.body.ApplyTorque(self.thrust/2)
+                player.body.ApplyForce(player.body.GetWorldVector((self.rot_thrust, 0)), player.body.GetWorldPoint((-2,-3)))
             if self.thrust_cw:
-                player.body.ApplyTorque(-self.thrust/2)
+                player.body.ApplyForce(player.body.GetWorldVector((-self.rot_thrust, 0)), player.body.GetWorldPoint((2,-3)))
 
         if self.zoom_in:
             self.camera_height /= 10 ** dt
