@@ -87,16 +87,22 @@ class AdAstraWindow(pyglet.window.Window):
             self.draw_shape(shape)
         glPopMatrix()
 
+        self.draw_hud(self.universe.agents['player'].body)
+
+    def draw_hud(self, body):
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        glOrtho(0, self.width, self.height, 0, -1, 1)
+        glOrtho(0, self.width, 0, self.height, -1, 1)
+
+        velocity = body.linearVelocity.tuple()
+        print velocity
+        x = self.width/2
+        y = self.height/2
 
         glColor3f(1,1,1)
-        glBegin(GL_POLYGON)
-        glVertex2d(10, 10)
-        glVertex2d(10, 12)
-        glVertex2d(12, 12)
-        glVertex2d(12, 10)
+        glBegin(GL_LINE_STRIP)
+        glVertex2d(x, y)
+        glVertex2d(x + velocity[0], y + velocity[1])
         glEnd()
 
     def draw_shape(self, shape):
