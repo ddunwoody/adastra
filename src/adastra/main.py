@@ -95,7 +95,6 @@ class AdAstraWindow(pyglet.window.Window):
         glOrtho(0, self.width, 0, self.height, -1, 1)
 
         velocity = body.linearVelocity.tuple()
-        print velocity
         x = self.width/2
         y = self.height/2
 
