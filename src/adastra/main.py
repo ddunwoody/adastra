@@ -87,6 +87,18 @@ class AdAstraWindow(pyglet.window.Window):
             self.draw_shape(shape)
         glPopMatrix()
 
+        glMatrixMode(GL_PROJECTION)
+        glLoadIdentity()
+        glOrtho(0, self.width, self.height, 0, -1, 1)
+
+        glColor3f(1,1,1)
+        glBegin(GL_POLYGON)
+        glVertex2d(10, 10)
+        glVertex2d(10, 12)
+        glVertex2d(12, 12)
+        glVertex2d(12, 10)
+        glEnd()
+
     def draw_shape(self, shape):
         glPushMatrix()
         p = shape.GetBody().GetPosition()
