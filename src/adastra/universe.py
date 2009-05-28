@@ -2,7 +2,7 @@ from __future__ import with_statement
 
 from adastra.agent import Agent
 from adastra.config import get_path
-from adastra.content import parse_shapes
+from adastra.content import parse_shapes, parse_thrusters
 import adastra.svg.store as store
 
 from Box2D import *
@@ -59,6 +59,7 @@ class Player(Planet):
         for shape_def in parse_shapes(svg):
             shape = agent.body.CreateShape(shape_def.shape_def)
             shape.SetUserData({'color': shape_def.color})
+        agent.body.SetUserData({'thrusters': parse_thrusters(svg)})
         agent.body.SetMassFromShapes()
 
 @contextmanager

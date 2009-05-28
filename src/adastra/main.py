@@ -28,8 +28,6 @@ class AdAstraWindow(pyglet.window.Window):
         self.zoom_in = self.zoom_out = False
 
         self.thrust_up = self.thrust_ccw = self.thrust_cw = False
-        self.thrust = 300
-        self.rot_thrust = 50
 
         self.universe = load_universe(self.width, self.height)
         self.world = self.universe.world
@@ -46,12 +44,13 @@ class AdAstraWindow(pyglet.window.Window):
             force = player_pos.copy()
             force.mul_float(-100000 / distance_sq)
             player.body.ApplyForce(force, player_pos)
+            thrusters = player.body.GetUserData()['thrusters']
             if self.thrust_up:
-                player.body.ApplyForce(player.body.GetWorldVector((0, self.thrust)), player_pos)
+                player.body.ApplyForce(player.body.GetWorldVector(b2Vec2(thrusters[0].direction) * thrusters[0].thrust), player.body.GetWorldPoint(thrusters[0].position))
             if self.thrust_ccw:
-                player.body.ApplyForce(player.body.GetWorldVector((self.rot_thrust, 0)), player.body.GetWorldPoint((-2,-3)))
+                player.body.ApplyForce(player.body.GetWorldVector(b2Vec2(thrusters[1].direction) * thrusters[1].thrust), player.body.GetWorldPoint(thrusters[1].position))
             if self.thrust_cw:
-                player.body.ApplyForce(player.body.GetWorldVector((-self.rot_thrust, 0)), player.body.GetWorldPoint((2,-3)))
+                player.body.ApplyForce(player.body.GetWorldVector(b2Vec2(thrusters[2].direction) * thrusters[2].thrust), player.body.GetWorldPoint(thrusters[2].position))
 
         if self.zoom_in:
             self.camera_height /= 10 ** dt
