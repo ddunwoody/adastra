@@ -1,5 +1,7 @@
 from Box2D import *
 
+import pyglet.window.key as key
+
 from adastra.material import *
 
 _materials = {'metal': Metal()}
@@ -40,7 +42,7 @@ def parse_thrusters(svg):
         thrusters.append(thruster)
         thruster.thrust = float(path.data['thrust'])
         thruster.position = path.points[1]
-        thruster.keys = path.data['keys']
+        thruster.keys = [getattr(key, k) for k in path.data['keys'].split(',')]
     return thrusters
 
 class _Thruster(object):

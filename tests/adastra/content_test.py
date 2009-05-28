@@ -1,5 +1,7 @@
 import unittest
 
+import pyglet.window.key as key
+
 from adastra.content import parse_shapes, parse_thrusters
 from adastra.material import Metal
 from adastra.svg.Group import *
@@ -54,7 +56,7 @@ class ContentParseThrustersTest(unittest.TestCase):
         self.svg.groups['thrusters'] = Group()
         self.paths = self.svg.groups['thrusters'].paths
         path_up = Path([(80,350),(80,330)])
-        path_up.data = {'thrust': '1.5', 'keys': 'UP'}
+        path_up.data = {'thrust': '1.5', 'keys': 'UP,DOWN'}
         path_left = Path([(35,350), (50,350)])
         path_left.data = {'thrust': '1.0', 'keys': 'LEFT'}
         path_right = Path([(125,350),(110,350)])
@@ -90,9 +92,9 @@ class ContentParseThrustersTest(unittest.TestCase):
         self.assertEqual(self.thrusters[2].position, (110,-350))
 
     def testKeys(self):
-        self.assertEqual(self.thrusters[0].keys, 'UP')
-        self.assertEqual(self.thrusters[1].keys, 'LEFT')
-        self.assertEqual(self.thrusters[2].keys, 'RIGHT')
+        self.assertEqual(self.thrusters[0].keys, [key.UP, key.DOWN])
+        self.assertEqual(self.thrusters[1].keys, [key.LEFT])
+        self.assertEqual(self.thrusters[2].keys, [key.RIGHT])
 
     def testPathLengthOfOneRaisesException(self):
         path_one_point = Path([(125,350)])
