@@ -23,3 +23,28 @@ def parse_shapes(svg):
 class _Shape(object):
     shape_def = None
     color = None
+
+def parse_thrusters(svg):
+    thrusters = []
+    for path in svg.paths('thrusters'):
+        if len(path.points) != 2:
+            raise Exception()
+        if not path.data.has_key('thrust'):
+            raise Exception()
+        if not path.data.has_key('thrust'):
+            raise Exception()
+        thruster = _Thruster()
+        direction = b2Vec2(path.points[1]) - b2Vec2(path.points[0])
+        direction.Normalize()
+        thruster.direction = direction.tuple()
+        thrusters.append(thruster)
+        thruster.thrust = float(path.data['thrust'])
+        thruster.position = path.points[1]
+        thruster.keys = path.data['keys']
+    return thrusters
+
+class _Thruster(object):
+    direction = None
+    thrust = 0
+    position = None
+    keys = None
