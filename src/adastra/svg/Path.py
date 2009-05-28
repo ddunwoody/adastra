@@ -1,5 +1,5 @@
 class Path(object):
-    def __init__(self, points):
+    def __init__(self, points=[]):
         self.points = points
         self.fill = None
         self.stroke = None
