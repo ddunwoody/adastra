@@ -6,13 +6,15 @@ import adastra.svg.store as store
 
 import glob
 from lxml import etree
-from lxml.etree import ElementTree 
+from lxml.etree import ElementTree
+import os 
 from tempfile import TemporaryFile
 
 class StoreTest(unittest.TestCase):
     
     def setUp(self):
-        self.svg = store.load('store_test.svg')
+        self.dirname = os.path.dirname(__file__)
+        self.svg = store.load(os.path.join(self.dirname, 'store_test.svg'))
         self.paths = self.svg.groups['foo'].paths
 
     def testSize(self):
@@ -64,7 +66,7 @@ class StoreTest(unittest.TestCase):
         self.assertEqual(data, {'key1': 'value1', 'key2': 'value2'})
 
     def testRoundTrip(self):
-        filename = 'roundtrip_test.svg'
+        filename = os.path.join(self.dirname, 'roundtrip_test.svg')
         tempfile = TemporaryFile()
         store.save(store.load(filename), tempfile)
         tempfile.seek(0)
