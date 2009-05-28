@@ -2,6 +2,7 @@ from __future__ import with_statement
 
 from adastra.agent import Agent
 from adastra.config import get_path
+from adastra.content import parse_shapes
 import adastra.svg.store as store
 
 from Box2D import *
@@ -55,14 +56,9 @@ class Player(Planet):
         agent.body.SetAngularVelocity(self.fields['angular_velocity'])
         svg = store.load(self.fields['svg'])
         store.save(svg, self.fields['svg'])
-        for path in svg.paths('shapes'):
-            shape_def = b2PolygonDef()
-            shape_def.setVertices(path.points)
-            shape_def.density = 1
-            shape_def.friction = 0.7
-            shape_def.restitution = 0.3
-            shape = agent.body.CreateShape(shape_def)
-            shape.SetUserData({'color': path.fill})
+        for shape_def in parse_shapes(svg):
+            shape = agent.body.CreateShape(shape_def.shape_def)
+            shape.SetUserData({'color': shape_def.color})
         agent.body.SetMassFromShapes()
 
 @contextmanager
