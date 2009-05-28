@@ -34,7 +34,7 @@ def load(path):
 
         # Parse each path in group
         for path_elem in g.getiterator('path'):
-            path = Path(points=[tuple(float(p) for p in match.group().split(','))
+            path = Path([tuple(float(p) for p in match.group().split(','))
                                 for match in re.finditer('[-.\d,]+', path_elem.get('d'))])
             if path.points[-1] == path.points[0]:
                 path.points.pop()
