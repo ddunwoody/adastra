@@ -50,3 +50,4 @@ class _Thruster(object):
     thrust = 0
     position = None
     keys = None
+    firing = False

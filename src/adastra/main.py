@@ -27,8 +27,6 @@ class AdAstraWindow(pyglet.window.Window):
         self.max_camera_height = 100000
         self.zoom_in = self.zoom_out = False
 
-        self.thrust_up = self.thrust_ccw = self.thrust_cw = False
-
         self.universe = load_universe(self.width, self.height)
         self.world = self.universe.world
 
@@ -44,14 +42,10 @@ class AdAstraWindow(pyglet.window.Window):
             force = player_pos.copy()
             force.mul_float(-100000 / distance_sq)
             player.body.ApplyForce(force, player_pos)
-            thrusters = player.body.GetUserData()['thrusters']
-            if self.thrust_up:
-                player.body.ApplyForce(player.body.GetWorldVector(b2Vec2(thrusters[0].direction) * thrusters[0].thrust), player.body.GetWorldPoint(thrusters[0].position))
-            if self.thrust_ccw:
-                player.body.ApplyForce(player.body.GetWorldVector(b2Vec2(thrusters[1].direction) * thrusters[1].thrust), player.body.GetWorldPoint(thrusters[1].position))
-            if self.thrust_cw:
-                player.body.ApplyForce(player.body.GetWorldVector(b2Vec2(thrusters[2].direction) * thrusters[2].thrust), player.body.GetWorldPoint(thrusters[2].position))
-
+            for thruster in player.body.GetUserData()['thrusters']:
+                if thruster.firing:
+                    player.body.ApplyForce(player.body.GetWorldVector(b2Vec2(thruster.direction) * thruster.thrust),
+                                           player.body.GetWorldPoint(thruster.position))
         if self.zoom_in:
             self.camera_height /= 10 ** dt
         if self.zoom_out:
@@ -146,24 +140,18 @@ class AdAstraWindow(pyglet.window.Window):
             self.zoom_in = True
         if symbol == pyglet.window.key.F11:
             self.set_fullscreen(not self.fullscreen)
-        if symbol == pyglet.window.key.UP:
-            self.thrust_up = True
-        if symbol == pyglet.window.key.LEFT:
-            self.thrust_ccw = True
-        if symbol == pyglet.window.key.RIGHT:
-            self.thrust_cw = True
+        for thruster in self.universe.agents['player'].body.GetUserData()['thrusters']:
+            if symbol in thruster.keys:
+                thruster.firing = True
 
     def on_key_release(self, symbol, modifiers):
         if symbol == pyglet.window.key.MINUS:
             self.zoom_out = False
         if symbol == pyglet.window.key.EQUAL:
             self.zoom_in = False
-        if symbol == pyglet.window.key.UP:
-            self.thrust_up = False
-        if symbol == pyglet.window.key.LEFT:
-            self.thrust_ccw = False
-        if symbol == pyglet.window.key.RIGHT:
-            self.thrust_cw = False
+        for thruster in self.universe.agents['player'].body.GetUserData()['thrusters']:
+            if symbol in thruster.keys:
+                thruster.firing = False
 
 def main():
     window = AdAstraWindow()
