@@ -94,14 +94,14 @@ class AdAstraWindow(pyglet.window.Window):
         glLoadIdentity()
         glOrtho(0, self.width, 0, self.height, -1, 1)
 
-        velocity = body.linearVelocity.tuple()
+        velocity = body.linearVelocity
         x = self.width/2
         y = self.height/2
 
         glColor3f(1,1,1)
         glBegin(GL_LINE_STRIP)
         glVertex2d(x, y)
-        glVertex2d(x + velocity[0], y + velocity[1])
+        glVertex2d(x + velocity.x, y + velocity.y)
         glEnd()
 
     def draw_shape(self, shape):
