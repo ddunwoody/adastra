@@ -10,11 +10,6 @@ def parse_shapes(svg):
         shape_def.restitution = 0.3
         shapes.append(_Shape(shape_def, path.fill))
     return shapes
-#    shape_def = b2PolygonDef()
-#    shape_def.setVertices(path.points)
-#    shape_def.density = 1
-#    shape_def.friction = 0.7
-#    shape_def.restitution = 0.3
 
 class _Shape(object):
     def __init__(self, shape_def, color):
