@@ -40,7 +40,7 @@ class PlanetTest(unittest.TestCase):
         planet = Planet(position=(100, 100)) 
         self.assertEqual(planet.get_gravity(Body((100,101),   1)).y,   -1)
 
-    def testDirectionOfAttractionIsCorrect(self):
+    def testAttractionIsTowardsPlanetPosition(self):
         planet = Planet(position=(50, 50))
         self.assertEqual(planet.get_gravity(Body((50, 51), 1)).tuple(), ( 0, -1))
         self.assertEqual(planet.get_gravity(Body((50, 49), 1)).tuple(), ( 0,  1))
