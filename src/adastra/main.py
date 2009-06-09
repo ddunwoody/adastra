@@ -8,7 +8,7 @@ import math
 
 class AdAstraWindow(pyglet.window.Window):
     def __init__(self):
-        pyglet.window.Window.__init__(self, fullscreen=False,
+        pyglet.window.Window.__init__(self, fullscreen=True,
                                       caption="Ad Astra")
         self.set_mouse_visible(False)
         glEnable(GL_BLEND)
@@ -22,7 +22,7 @@ class AdAstraWindow(pyglet.window.Window):
         glEndList()
 
         self.camera_pos = 0, 0
-        self.camera_height = 100
+        self.camera_height = 750
         self.min_camera_height = 1
         self.max_camera_height = 100000
         self.zoom_in = self.zoom_out = False

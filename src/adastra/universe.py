@@ -84,16 +84,24 @@ def load_universe(width, height):
     world = b2World(aabb, gravity, doSleep)
     universe = Universe(world)
 
-    # create ground
+    # create earth
     with create_planet(universe) as p:
         p.position = 0, 0
-        p.radius = 1000
-        p.color = 0, 0.4, 0, 1
-        p.mass = 10000000
+        p.radius = 100
+        p.color = 0, 0.4, 0
+        p.mass = 100000
+
+    # create moon
+    with create_planet(universe) as p:
+        p.position = 400, 400
+        p.radius = 30
+        p.color = 0.3, 0.3, 0.3
+        p.mass = 10000
+
 
     with create_player(universe) as a:
         a.id = "player"
-        a.position = 0, 1004
+        a.position = 0, 104
         a.angle = 0
         a.linear_velocity = 0, 0
         a.angular_velocity = 0
