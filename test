@@ -1,1 +1,1 @@
-env PYTHONPATH=$PYTHONPATH:~/play/Box2D-2.0.2b1 nosetests $*
+env PYTHONPATH=$PYTHONPATH:~/play/Box2D-2.0.2b1:~/play/pyglet-1.1.3 nosetests $*
