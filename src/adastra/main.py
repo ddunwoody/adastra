@@ -38,10 +38,10 @@ class AdAstraWindow(pyglet.window.Window):
         if player:
             player_pos = player.body.GetWorldCenter()
             self.camera_pos = player_pos.tuple()
-            distance_sq = player_pos.LengthSquared()
-            force = player_pos.copy()
-            force.mul_float(-100000 / distance_sq)
-            player.body.ApplyForce(force, player_pos)
+
+            for planet in self.universe.planets:
+                gravity = planet.attract(player_pos, player.body.GetMass())
+                player.body.ApplyForce(gravity, player_pos)
             for thruster in player.body.GetUserData()['thrusters']:
                 if thruster.firing:
                     player.body.ApplyForce(player.body.GetWorldVector(b2Vec2(thruster.direction) * thruster.thrust),

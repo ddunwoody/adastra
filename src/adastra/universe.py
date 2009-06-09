@@ -15,6 +15,7 @@ class Universe(object):
     def __init__(self, world):
         self.world = world
         self.agents = {}
+        self.planets = []
         self.background_color = 0, 0, 0.1
 
 
@@ -38,7 +39,7 @@ class PlanetConfig(object):
         shape_def.radius = planet.radius
         shape = body.CreateShape(shape_def)
         shape.SetUserData({'planet': planet, 'color': planet.color})
-
+        universe.planets.append(planet)
 
 @contextmanager
 def create_planet(universe):
@@ -88,7 +89,7 @@ def load_universe(width, height):
         p.position = 0, 0
         p.radius = 1000
         p.color = 0, 0.4, 0, 1
-        p.mass = 100000
+        p.mass = 10000000
 
     with create_player(universe) as a:
         a.id = "player"
