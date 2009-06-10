@@ -11,12 +11,13 @@ class Planet(object):
         self.mass = mass
         self.color = color
 
-    # returns a b2Vec2 which is the force to be applied to the body
-    def get_gravity(self, body):
-        vector = self.position - body.GetWorldCenter()
+    # returns a tuple which represents the force to be appled to the
+    # centre of mass of the orbiting body
+    def get_gravity(self, position, mass):
+        vector = self.position - position
         distanceSq = vector.LengthSquared()
         vector.Normalize()
-        return vector * (body.GetMass() * self.mass / distanceSq)
+        return (vector * (mass * self.mass / distanceSq)).tuple()
 
     # returns the orbital velocity required for a circular orbit of a given radius
     def orbital_velocity(self, radius):

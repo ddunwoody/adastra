@@ -40,7 +40,7 @@ class AdAstraWindow(pyglet.window.Window):
             self.camera_pos = player_pos.tuple()
 
             for planet in self.universe.planets:
-                gravity = planet.get_gravity(player.body)
+                gravity = planet.get_gravity(player_pos, player.body.GetMass())
                 player.body.ApplyForce(gravity, player_pos)
             for thruster in player.body.GetUserData()['thrusters']:
                 if thruster.firing:
