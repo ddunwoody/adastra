@@ -37,10 +37,54 @@ class PlanetTest(unittest.TestCase):
         self.assertAlmostEqual(planet.get_gravity((51, 51), 1)[0], -1/4*sqrt(2))
         self.assertAlmostEqual(planet.get_gravity((51, 51), 1)[1], -1/4*sqrt(2))
 
-    def testOrbitalVelocity(self):
+    def testOrbitalVelocityVariesByRadiusAndMass(self):
         planet = Planet()
-        self.assertAlmostEqual(planet.orbital_velocity(1), sqrt(1))
-        self.assertAlmostEqual(planet.orbital_velocity(2), sqrt(1/2))
-        self.assertAlmostEqual(planet.orbital_velocity(5), sqrt(1/5))
+        self.assertAlmostEqual(planet.orbital_velocity((0, 1))[0], sqrt(1))
+        self.assertAlmostEqual(planet.orbital_velocity((0, 2))[0], sqrt(1/2))
+        self.assertAlmostEqual(planet.orbital_velocity((0, 5))[0], sqrt(1/5))
         planet = Planet(mass=10)
-        self.assertAlmostEqual(planet.orbital_velocity(7), sqrt(10/7))
+        self.assertAlmostEqual(planet.orbital_velocity((0, 7))[0], sqrt(10/7))
+
+    def testOrbitalVelocityWithNonOriginPlanetPosition(self):
+        planet = Planet(position=(100, 100))
+        self.assertAlmostEqual(planet.orbital_velocity((100, 101))[0], sqrt(1))
+        self.assertAlmostEqual(planet.orbital_velocity((100, 102))[0], sqrt(1/2))
+        self.assertAlmostEqual(planet.orbital_velocity((100, 105))[0], sqrt(1/5))
+
+    def testOrbitalVelocityDirectionIsCorrect(self):
+        planet = Planet()
+        # 12 o'clock
+        velocity = planet.orbital_velocity(( 0,  1))
+        self.assertAlmostEqual(velocity[0],  1)
+        self.assertAlmostEqual(velocity[1],  0)
+        # 3 o'clock
+        velocity = planet.orbital_velocity(( 1,  0))
+        self.assertAlmostEqual(velocity[0],  0)
+        self.assertAlmostEqual(velocity[1], -1)
+        # 6 o'clock
+        velocity = planet.orbital_velocity(( 0,  -1))
+        self.assertAlmostEqual(velocity[0], -1)
+        self.assertAlmostEqual(velocity[1],  0, places=6) # close enough :)
+        # 9 o'clock
+        velocity = planet.orbital_velocity((-1,  0))
+        self.assertAlmostEqual(velocity[0],  0)
+        self.assertAlmostEqual(velocity[1],  1)
+
+    def testCounterClockWiseOrbitalVelocityIsCorrect(self):
+        planet = Planet()
+        # 12 o'clock
+        velocity = planet.orbital_velocity(( 0,  1), clockwise=False)
+        self.assertAlmostEqual(velocity[0], -1)
+        self.assertAlmostEqual(velocity[1],  0)
+        # 3 o'clock
+        velocity = planet.orbital_velocity(( 1,  0), clockwise=False)
+        self.assertAlmostEqual(velocity[0],  0)
+        self.assertAlmostEqual(velocity[1],  1)
+        # 6 o'clock
+        velocity = planet.orbital_velocity(( 0,  -1), clockwise=False)
+        self.assertAlmostEqual(velocity[0],  1)
+        self.assertAlmostEqual(velocity[1],  0, places=6) # close enough :)
+        # 9 o'clock
+        velocity = planet.orbital_velocity((-1,  0), clockwise=False)
+        self.assertAlmostEqual(velocity[0],  0)
+        self.assertAlmostEqual(velocity[1], -1)
