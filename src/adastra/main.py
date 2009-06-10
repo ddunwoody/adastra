@@ -87,7 +87,20 @@ class AdAstraWindow(pyglet.window.Window):
             self.draw_shape(shape)
         glPopMatrix()
 
-        self.draw_hud(self.universe.agents['player'].body)
+        player_body = self.universe.agents['player'].body
+
+        self.draw_hud(player_body)
+
+        player_vel = player_body.GetLinearVelocity()
+        orbital_vel = b2Vec2(self.universe.planets[0].orbital_velocity(player_body.GetWorldCenter()))
+        dv = orbital_vel - player_vel
+        text = "%+.2f (%+.2f, %+.2f)" % (dv.Length(), dv.x, dv.y)
+        label = pyglet.text.Label(text,
+                                  font_name='Times New Roman',
+                                  font_size=self.height//50,
+                                  x=self.width-10, y=10,
+                                  anchor_x='right', anchor_y='bottom')
+        label.draw()
 
     def draw_hud(self, body):
         glMatrixMode(GL_PROJECTION)
