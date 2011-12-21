@@ -2,3 +2,5 @@
 .pydevproject
 *.pyc
 *.pyo
+Ad_Astra.egg-info
+build
