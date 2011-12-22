@@ -7,18 +7,18 @@ from cocos.sprite import Sprite
 from adastra.systems import Engine
 
 import pyglet.resource as resource
-import pyglet.window.key as pygkey
+from pyglet.window import key
 
 class Lander(Sprite):
     def __init__(self, image="lander.png", position=(0,0), rotation=0, scale=1):
         super(Lander, self).__init__("lander.png", position, rotation, scale)
-        self.schedule(self.step)
+        self.schedule(self.update)
         self.engine = Engine()
         self.systems = [self.engine]
 
-    def step(self, dt):
+    def update(self, dt):
         for system in self.systems:
-            system.step(dt)
+            system.update(dt)
 
 
 class LanderLayer(Layer):
@@ -28,38 +28,34 @@ class LanderLayer(Layer):
 
 
 class SystemsDisplay(Layer):
-    is_event_handler = True
-    
     def __init__(self, lander):
         super(SystemsDisplay, self).__init__()
         self.lander = lander
         self.text = Label('', (director.get_window_size()[0] - 10 ,10), anchor_x="right")
         self.value = 0
         self.add(self.text)
+        self.schedule(self.update)
 
-    def update_text(self):
+    def update(self, dt):
         self.text.element.text = ",".join([str(s) for s in self.lander.systems])
     
-    def on_key_press(self, key, modifiers):
-        if key == pygkey.W:
-            self.lander.engine.throttle += 0.1
-        if key == pygkey.S:
-            self.lander.engine.throttle -= 0.1
-
-    def on_key_release(self, key, modifiers):
-        pass
-
-    def on_draw(self):
-        self.update_text()
-
 
 if __name__ == "__main__":
     resource.path = ['@adastra.resources']
     resource.reindex()
 
     director.init(caption="Ad Astra")
-
     x,y = director.get_window_size()
     lander = Lander(position=(x/2, y/2), scale=2)
-    director.run(Scene(LanderLayer(lander), SystemsDisplay(lander)))
+
+    keyboard = key.KeyStateHandler()
+    director.window.push_handlers(keyboard)
+
+    def update(dt):
+        lander.engine.throttle += dt * keyboard[key.W]
+        lander.engine.throttle -= dt * keyboard[key.S]
+
+    scene = Scene(LanderLayer(lander), SystemsDisplay(lander))
+    scene.schedule(update)
+    director.run(scene)
     

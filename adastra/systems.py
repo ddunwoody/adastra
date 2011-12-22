@@ -32,7 +32,7 @@ class Engine(object):
         self._thrust = 0
         self.spool_time = spool_time
         
-    def step(self, dt):
+    def update(self, dt):
         delta = self.throttle.value - self._thrust
         abs_move = dt / self.spool_time
         self._thrust += clip(delta, -abs_move, abs_move)
