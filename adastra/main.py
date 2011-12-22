@@ -8,6 +8,8 @@ from pyglet.window import key
 
 from adastra.systems import Lander
 
+from pyglet.gl import glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MIN_FILTER, GL_NEAREST
+
 class SystemsLayer(Layer):
     def __init__(self, systems):
         super(SystemsLayer, self).__init__()
@@ -26,6 +28,7 @@ if __name__ == "__main__":
 
     director.init(caption="Ad Astra")
     x,y = director.get_window_size()
+
     lander = Lander(position=(x/2, y/2), scale=2)
 
     keyboard = key.KeyStateHandler()
@@ -40,5 +43,8 @@ if __name__ == "__main__":
 
     scene = Scene(layer, SystemsLayer(lander.systems))
     scene.schedule(update)
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
     director.run(scene)
     
