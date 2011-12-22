@@ -4,7 +4,7 @@ from cocos.layer import Layer
 from cocos.scene import Scene
 from cocos.sprite import Sprite 
 
-from adastra.systems import Throttle
+from adastra.systems import Engine
 
 import pyglet.resource as resource
 import pyglet.window.key as pygkey
@@ -12,13 +12,14 @@ import pyglet.window.key as pygkey
 class Lander(Sprite):
     def __init__(self, image="lander.png", position=(0,0), rotation=0, scale=1):
         super(Lander, self).__init__("lander.png", position, rotation, scale)
-        self.schedule(self.update)
-        self.throttle = Throttle()
-        self.systems = [self.throttle]
+        self.schedule(self.step)
+        self.engine = Engine()
+        self.systems = [self.engine]
 
-    def update(self, dt):
-        pass
-        
+    def step(self, dt):
+        for system in self.systems:
+            system.step(dt)
+
 
 class LanderLayer(Layer):
     def __init__(self, lander):
@@ -41,9 +42,9 @@ class SystemsDisplay(Layer):
     
     def on_key_press(self, key, modifiers):
         if key == pygkey.W:
-            self.lander.throttle += 0.1
+            self.lander.engine.throttle += 0.1
         if key == pygkey.S:
-            self.lander.throttle -= 0.1
+            self.lander.engine.throttle -= 0.1
 
     def on_key_release(self, key, modifiers):
         pass
