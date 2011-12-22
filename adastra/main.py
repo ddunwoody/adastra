@@ -34,14 +34,13 @@ class SystemsDisplay(Layer):
         self.text = Label('', (director.get_window_size()[0] - 10 ,10), anchor_x="right")
         self.value = 0
         self.add(self.text)
-        self.schedule(self.update)
 
-    def update(self, dt):
+    def draw(self):
         self.text.element.text = ",".join([str(s) for s in self.lander.systems])
     
 
 if __name__ == "__main__":
-    resource.path = ['@adastra.resources']
+    resource.path.append('@adastra.resources')
     resource.reindex()
 
     director.init(caption="Ad Astra")
