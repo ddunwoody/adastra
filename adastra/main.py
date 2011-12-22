@@ -2,41 +2,22 @@ from cocos.director import director
 from cocos.text import Label
 from cocos.layer import Layer
 from cocos.scene import Scene
-from cocos.sprite import Sprite 
-
-from adastra.systems import Engine
 
 import pyglet.resource as resource
 from pyglet.window import key
 
-class Lander(Sprite):
-    def __init__(self, image="lander.png", position=(0,0), rotation=0, scale=1):
-        super(Lander, self).__init__("lander.png", position, rotation, scale)
-        self.schedule(self.update)
-        self.engine = Engine()
-        self.systems = [self.engine]
+from adastra.models import Lander
 
-    def update(self, dt):
-        for system in self.systems:
-            system.update(dt)
-
-
-class LanderLayer(Layer):
-    def __init__(self, lander):
-        super(LanderLayer, self).__init__()
-        self.add(lander)
-
-
-class SystemsDisplay(Layer):
-    def __init__(self, lander):
-        super(SystemsDisplay, self).__init__()
-        self.lander = lander
+class SystemsLayer(Layer):
+    def __init__(self, systems):
+        super(SystemsLayer, self).__init__()
+        self.systems = systems
         self.text = Label('', (director.get_window_size()[0] - 10 ,10), anchor_x="right")
         self.value = 0
         self.add(self.text)
 
     def draw(self):
-        self.text.element.text = ",".join([str(s) for s in self.lander.systems])
+        self.text.element.text = ",".join([str(s) for s in self.systems])
     
 
 if __name__ == "__main__":
@@ -54,7 +35,10 @@ if __name__ == "__main__":
         lander.engine.throttle += dt * keyboard[key.W]
         lander.engine.throttle -= dt * keyboard[key.S]
 
-    scene = Scene(LanderLayer(lander), SystemsDisplay(lander))
+    layer = Layer()
+    layer.add(lander)
+
+    scene = Scene(layer, SystemsLayer(lander.systems))
     scene.schedule(update)
     director.run(scene)
     
