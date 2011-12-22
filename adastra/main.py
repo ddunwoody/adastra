@@ -6,7 +6,7 @@ from cocos.scene import Scene
 import pyglet.resource as resource
 from pyglet.window import key
 
-from adastra.models import Lander
+from adastra.systems import Lander
 
 class SystemsLayer(Layer):
     def __init__(self, systems):

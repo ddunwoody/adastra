@@ -1,3 +1,5 @@
+from cocos.sprite import Sprite 
+
 from numpy import clip
 
 class Throttle(object):
@@ -24,24 +26,37 @@ class Throttle(object):
 
     def __str__(self):
         return "Throttle(%0.2f)" % self.value
-    
-    
-class Engine(object):        
-    def __init__(self, throttle=Throttle(), spool_time = 3):
+
+
+class Engine(Sprite):        
+    def __init__(self, image="engine.png", position=(0,0), rotation=0, scale=1, throttle=Throttle(), spool_time=3, max_thrust=1):
+        super(Engine, self).__init__(image, position, rotation, scale)
         self.throttle = throttle
-        self._thrust = 0
+        self.max_thrust = max_thrust
+        self._power = 0
         self.spool_time = spool_time
         
     def update(self, dt):
-        delta = self.throttle.value - self._thrust
+        delta = self.throttle.value - self._power
         abs_move = dt / self.spool_time
-        self._thrust += clip(delta, -abs_move, abs_move)
+        self._power += clip(delta, -abs_move, abs_move)
         
     @property
     def thrust(self):
-        return self._thrust
+        return self._power * self.max_thrust
 
     def __str__(self):
-        return "Engine(%0.2f/%0.2f)" % (self._thrust, self.throttle.value)
-        
+        return "Engine(%0.2f/%0.2f)" % (self._power, self.throttle.value)
+
     
+class Lander(Sprite):
+    def __init__(self, image="lander.png", position=(0,0), rotation=0, scale=1):
+        super(Lander, self).__init__(image, position, rotation, scale)
+        self.schedule(self.update)
+        self.engine = Engine(position=(0,-4))
+        self.add(self.engine)
+        self.systems = [self.engine]
+
+    def update(self, dt):
+        for system in self.systems:
+            system.update(dt)
