@@ -6,9 +6,9 @@ from pyglet.gl import GL_LINES, glColor3f
 from pyglet.graphics import draw
 from pyglet.window import key
 
-import adastra.setup as setup
-from adastra.systems import Lander
-from adastra.hud import HUDLayer
+import setup
+from systems import Lander
+from hud import HUDLayer
 
 class WorldLayer(Layer):
     def __init__(self, lander):
@@ -18,14 +18,17 @@ class WorldLayer(Layer):
         self.add(lander)
         
     def draw(self, *args, **kwargs):
-        glColor3f(0,255,0)
-        draw(2, GL_LINES, ('v2i', (0, self.ground_height, self.width, self.ground_height)))
+        glColor3f(0,0.5,0)
+        offset = 0
+        for i in range(8):
+            draw(2, GL_LINES, ('v2i', (0, self.ground_height - offset, self.width, self.ground_height - offset)))
+            offset += i*2
         Layer.draw(self, *args, **kwargs)
 
 if __name__ == "__main__":
     setup.resources()
 
-    director.init(caption="Ad Astra", resizable=True)
+    director.init(caption="Ad Astra", resizable=True, width=640, height=400)
     x,y = director.get_window_size()
 
     lander = Lander(position=(x/2, 50))

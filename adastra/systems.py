@@ -3,6 +3,8 @@ from cocos.sprite import Sprite
 from numpy import clip
 from math import radians, sin, cos
 
+from utils import load_image
+
 class Throttle(object):
     "Convenient class for constraining a value to a range"
     def __init__(self, min_value=0, max_value=1, value=0):
@@ -58,7 +60,7 @@ class HSI(object):
 class Engine(Sprite):
     "Renders a sprite and lags the thrust demanded by a throttle"        
     def __init__(self, image="engine.png", position=(0,0), rotation=0, scale=1, throttle=Throttle(), spool_time=3, max_thrust=1):
-        super(Engine, self).__init__(image, position, rotation, scale)
+        super(Engine, self).__init__(load_image(image), position, rotation, scale)
         self.throttle = throttle
         self.max_thrust = max_thrust
         self._power = 0
@@ -80,7 +82,7 @@ class Engine(Sprite):
 class Lander(Sprite):
     "A player's ship"
     def __init__(self, image="lander.png", position=(0,0), rotation=0, scale=1):
-        super(Lander, self).__init__(image, position, rotation, scale)
+        super(Lander, self).__init__(load_image(image), position, rotation, scale)
         self.vvel = 0
         self.hvel = 0
         self.rvel = 0

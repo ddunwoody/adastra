@@ -4,9 +4,10 @@ from cocos.layer import Layer
 from cocos.sprite import Sprite
 from cocos.text import Label
 
-from pyglet.resource import image 
-from pyglet.window import key
+from utils import load_image
 
+from pyglet.image import ImageGrid
+from pyglet.window import key
 
 class HUDLayer(Layer):
     "Display HUD elements"
@@ -30,17 +31,18 @@ class SystemsLabel(Label):
         
 class ThrusterLights(BatchNode):
     "Displays a little light for each thruster pressed"
-    def __init__(self, keyboard, position, scale=1, spread=3):
+    def __init__(self, keyboard, position, spread=3):
         super(ThrusterLights, self).__init__()
         self.keyboard = keyboard
         self.position = position
 
-        self.images = [image("light_unlit.png"), image("light_green.png")]
+        self.images = ImageGrid(load_image("lights.png"), 1, 2)
+
         self.sprites = {}
-        self.sprites[key.W] = Sprite(self.images[0], (0, spread), scale=scale)
-        self.sprites[key.S] = Sprite(self.images[0], (0, -spread), scale=scale)
-        self.sprites[key.A] = Sprite(self.images[0], (-spread*2, 0), scale=scale)
-        self.sprites[key.D] = Sprite(self.images[0], (spread*2, 0), scale=scale)
+        self.sprites[key.W] = Sprite(self.images[0], (0, spread))
+        self.sprites[key.S] = Sprite(self.images[0], (0, -spread))
+        self.sprites[key.A] = Sprite(self.images[0], (-spread*2, 0))
+        self.sprites[key.D] = Sprite(self.images[0], (spread*2, 0))
 
         for sprite in self.sprites.values():
             self.add(sprite)
