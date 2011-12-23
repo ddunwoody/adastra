@@ -14,7 +14,7 @@ class WorldLayer(Layer):
     def __init__(self, lander):
         super(WorldLayer, self).__init__()
         self.width = director.get_window_size()[0]
-        self.ground_height = lander.get_rect().bottom
+        self.ground_height = lander.get_rect().bottom + 1
         self.add(lander)
         
     def draw(self, *args, **kwargs):
@@ -28,7 +28,7 @@ class WorldLayer(Layer):
 if __name__ == "__main__":
     setup.resources()
 
-    director.init(caption="Ad Astra", resizable=True, width=640, height=400)
+    director.init(caption="Ad Astra", resizable=True, width=1024, height=640)
     x,y = director.get_window_size()
 
     lander = Lander(position=(x/2, 50))
@@ -38,17 +38,23 @@ if __name__ == "__main__":
 
     def update(dt):
         delta = 1
+        lander.rvel = 0
         if keyboard[key.LSHIFT]:
             delta = 0.1
-        lander.engine.throttle += dt * keyboard[key.W] * delta
-        lander.engine.throttle -= dt * keyboard[key.S] * delta
-        lander.rvel += dt * keyboard[key.D] * delta * 10
-        lander.rvel -= dt * keyboard[key.A] * delta * 10
+        lander.engine.throttle.value += dt * keyboard[key.W] * delta
+        lander.engine.throttle.value -= dt * keyboard[key.S] * delta
+        if keyboard[key.SPACE]:
+            lander.engine.throttle.value = 0
+        if keyboard[key.E]:
+            lander.engine.throttle.value = 1
+        if keyboard[key.A] or keyboard[key.D]:
+            lander.rvel = keyboard[key.A] * -45 + keyboard[key.D] * 45
+            lander.rvel *= delta 
 
     layer = Layer()
     layer.add(lander)
 
-    scene = Scene(WorldLayer(lander), HUDLayer(lander.systems, keyboard))
+    scene = Scene(WorldLayer(lander), HUDLayer(lander, keyboard))
     scene.schedule(update)
 
     

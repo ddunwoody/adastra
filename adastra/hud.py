@@ -11,11 +11,11 @@ from pyglet.window import key
 
 class HUDLayer(Layer):
     "Display HUD elements"
-    def __init__(self, systems, keyboard):
+    def __init__(self, vehicle, keyboard):
         super(HUDLayer, self).__init__()
         x,y = director.get_window_size()
-        self.add(SystemsLabel(systems, (x-5, 10), anchor_x="right", font_name="Press Start 2P", font_size=8))
-        self.add(ThrusterLights(keyboard, (x-16, 32)))
+        self.add(SystemsLabel(vehicle.systems, (x-5, 10), anchor_x="right", font_name="Press Start 2P", font_size=8))
+        self.add(ThrusterLights(keyboard, (x-16, 64)))
 
 
 class SystemsLabel(Label):

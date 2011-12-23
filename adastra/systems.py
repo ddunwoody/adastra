@@ -1,3 +1,4 @@
+from cocos.cocosnode import CocosNode
 from cocos.sprite import Sprite 
 
 from numpy import clip
@@ -5,6 +6,21 @@ from math import radians, sin, cos
 
 from utils import load_image
 
+class System(CocosNode):
+    def __init__(self):
+        super(System, self).__init__()
+        self.vehicle = None
+        self.schedule(self._update)
+
+    def _update(self, dt):
+        if not self.vehicle:
+            self.vehicle = self.get_ancestor(Vehicle)
+        self.update(dt)
+
+    def update(self, dt):
+        pass
+
+    
 class Throttle(object):
     "Convenient class for constraining a value to a range"
     def __init__(self, min_value=0, max_value=1, value=0):
@@ -20,53 +36,44 @@ class Throttle(object):
     def value(self, value):
         self._value = clip(value, self.min, self.max)
         
-    def __iadd__(self, other):
-        self.value += other
-        return self
-
-    def __isub__(self, other):
-        self.value -= other
-        return self
-
     def __str__(self):
         return "Throttle(%0.2f)" % self.value
 
-class VVI(object):
-    def __init__(self, lander):
-        self.lander = lander
-        self.vvel = self.lander.vvel
-        self.vaccel = None
+
+class ValueAndRate(System):
+    "Attribute indicator, including rate of change"
+    def __init__(self, name, attr, offset=0):
+        super(ValueAndRate, self).__init__()
+        self.name = name
+        self.attr = attr
+        self.offset = offset
+        self.value = 0
+        self.rate = 0
 
     def update(self, dt):
-        vvel = self.lander.vvel
+        value = getattr(self.vehicle, self.attr)
         if dt == 0:
-            self.vaccel = 0
+            self.rate = 0
         else:
-            self.vaccel =  (vvel - self.vvel) / dt
-        self.vvel = vvel
+            self.rate =  (value - self.value) / dt
+        self.value = value
         
     def __str__(self):
-        return "VVI(%0.2f, %+0.2f)" % (self.vvel, self.vaccel)
-
-class HSI(object):
-    def __init__(self, lander):
-        self.lander = lander
-
-    def __str__(self):
-        return "HSI(%0.2f, %+0.2f)" % (self.lander.rotation, self.lander.rvel)
+        return "%s(%+0.2f, %+0.2f)" % (self.name, self.value+self.offset, self.rate)
 
 
-#TODO: refactor to separate rendering and engine modelling
-class Engine(Sprite):
-    "Renders a sprite and lags the thrust demanded by a throttle"        
-    def __init__(self, image="engine.png", position=(0,0), rotation=0, scale=1, throttle=Throttle(), spool_time=3, max_thrust=1):
-        super(Engine, self).__init__(load_image(image), position, rotation, scale)
+class Engine(System):
+    def __init__(self, position, throttle=Throttle(), spool_time=3, max_thrust=1):
+        super(Engine, self).__init__()
+        self.position = position
         self.throttle = throttle
+        self.spool_time = spool_time
         self.max_thrust = max_thrust
         self._power = 0
-        self.spool_time = spool_time
-        
+        self.schedule(self.update)
+      
     def update(self, dt):
+        "Calculates power by lagging throttle according to spool_time"
         delta = self.throttle.value - self._power
         abs_move = dt / self.spool_time
         self._power += clip(delta, -abs_move, abs_move)
@@ -78,20 +85,33 @@ class Engine(Sprite):
     def __str__(self):
         return "Engine(%0.2f/%0.2f)" % (self._power, self.throttle.value)
 
+
+class Vehicle(Sprite):
+    "A player's vehicle"
+    def __init__(self, image, **kwargs):
+        super(Vehicle, self).__init__(load_image(image), **kwargs)
+        self.systems = []
+
+    def add_system(self, system):
+        self.add(system)
+        self.systems.append(system)
+
     
-class Lander(Sprite):
-    "A player's ship"
-    def __init__(self, image="lander.png", position=(0,0), rotation=0, scale=1):
-        super(Lander, self).__init__(load_image(image), position, rotation, scale)
+class Lander(Vehicle):
+    def __init__(self, image="lander.png", **kwargs):
+        super(Lander, self).__init__(image, **kwargs)
         self.vvel = 0
         self.hvel = 0
         self.rvel = 0
         self.vaccel = 0
         self.haccel = 0
         self.schedule(self.update)
-        self.engine = Engine(position=(0,-4), max_thrust=12)
-        self.add(self.engine)
-        self.systems = [self.engine, VVI(self), HSI(self)]
+        self.engine = Engine(position=(0,-4), max_thrust=15)
+        self.add_system(self.engine)
+        self.add_system(ValueAndRate("Alt", "y", -50))
+        self.add_system(ValueAndRate("VVI", "vvel"))
+        self.add_system(ValueAndRate("HVI", "hvel"))
+        self.add_system(ValueAndRate("RVI", "rvel"))
         self.landed = True
 
     def update(self, dt):
@@ -114,7 +134,3 @@ class Lander(Sprite):
                 self.landed = True
         else:
             self.landed = False
-            
-        for system in self.systems:
-            if hasattr(system, 'update'):
-                system.update(dt)
