@@ -3,6 +3,7 @@ from cocos.sprite import Sprite
 from numpy import clip
 
 class Throttle(object):
+    "Convenient class for constraining a value to a range"
     def __init__(self, min_value=0, max_value=1, value=0):
         self.min = min_value
         self.max = max_value
@@ -28,7 +29,9 @@ class Throttle(object):
         return "Throttle(%0.2f)" % self.value
 
 
-class Engine(Sprite):        
+#TODO: refactor to separate rendering and engine modelling
+class Engine(Sprite):
+    "Renders a sprite and lags the thrust demanded by a throttle"        
     def __init__(self, image="engine.png", position=(0,0), rotation=0, scale=1, throttle=Throttle(), spool_time=3, max_thrust=1):
         super(Engine, self).__init__(image, position, rotation, scale)
         self.throttle = throttle
@@ -50,6 +53,7 @@ class Engine(Sprite):
 
     
 class Lander(Sprite):
+    "A player's ship"
     def __init__(self, image="lander.png", position=(0,0), rotation=0, scale=1):
         super(Lander, self).__init__(image, position, rotation, scale)
         self.schedule(self.update)
