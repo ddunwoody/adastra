@@ -8,14 +8,18 @@ import adastra.setup as setup
 from adastra.systems import Lander
 from adastra.hud import HUDLayer
 
+class WorldLayer(Layer):
+    def __init__(self, lander):
+        super(WorldLayer, self).__init__()
+        self.add(lander)
+
 if __name__ == "__main__":
     setup.resources()
 
     director.init(caption="Ad Astra")
     x,y = director.get_window_size()
 
-    lander = Lander(position=(x/2, y/2), scale=2)
-
+    lander = Lander(position=(x/2, 50), scale=2)
 
     keyboard = key.KeyStateHandler()
     director.window.push_handlers(keyboard)
@@ -28,7 +32,7 @@ if __name__ == "__main__":
     layer.add(lander)
 
     setup.gl()
-    scene = Scene(layer, HUDLayer(lander.systems, keyboard))
+    scene = Scene(WorldLayer(lander), HUDLayer(lander.systems, keyboard))
     scene.schedule(update)
 
     

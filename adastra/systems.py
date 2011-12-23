@@ -28,6 +28,13 @@ class Throttle(object):
     def __str__(self):
         return "Throttle(%0.2f)" % self.value
 
+class VVI(object):
+    def __init__(self, lander):
+        self.lander = lander
+        
+    def __str__(self):
+        return "VVI(%0.2f, %+0.2f)" % (self.lander.vvel, self.lander.vaccel)
+
 
 #TODO: refactor to separate rendering and engine modelling
 class Engine(Sprite):
@@ -59,8 +66,17 @@ class Lander(Sprite):
         self.schedule(self.update)
         self.engine = Engine(position=(0,-4))
         self.add(self.engine)
-        self.systems = [self.engine]
+        self.systems = [self.engine, VVI(self)]
+        self.vvel = 0
+        self.vaccel = 0
 
     def update(self, dt):
+        self.vaccel = -10 + 12 * self.engine.thrust
+        self.vvel += self.vaccel * dt
+        self.y += self.vvel * dt
+        if self.y < 50:
+            self.y = 50
+            self.vvel = 0
         for system in self.systems:
-            system.update(dt)
+            if hasattr(system, 'update'):
+                system.update(dt)
