@@ -3,12 +3,10 @@ from cocos.text import Label
 from cocos.layer import Layer
 from cocos.scene import Scene
 
-import pyglet.resource as resource
 from pyglet.window import key
 
+import adastra.setup as setup
 from adastra.systems import Lander
-
-from pyglet.gl import glTexParameteri, GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_TEXTURE_MIN_FILTER, GL_NEAREST
 
 class SystemsLayer(Layer):
     def __init__(self, systems):
@@ -23,8 +21,7 @@ class SystemsLayer(Layer):
     
 
 if __name__ == "__main__":
-    resource.path.append('@adastra.resources')
-    resource.reindex()
+    setup.resources()
 
     director.init(caption="Ad Astra")
     x,y = director.get_window_size()
@@ -44,7 +41,6 @@ if __name__ == "__main__":
     scene = Scene(layer, SystemsLayer(lander.systems))
     scene.schedule(update)
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+    setup.gl()
     director.run(scene)
     
