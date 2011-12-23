@@ -13,7 +13,7 @@ class HUDLayer(Layer):
     def __init__(self, systems, keyboard):
         super(HUDLayer, self).__init__()
         x = director.get_window_size()[0]
-        self.add(SystemsLabel(systems, (x-10, 10), anchor_x="right"))
+        self.add(SystemsLabel(systems, (x-10, 10), anchor_x="right", font_name="Press Start 2P", font_size=8))
         self.add(ThrusterLights(keyboard, (x/2,13)))
 
 
