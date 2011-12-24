@@ -6,6 +6,7 @@ import pyglet.graphics
 
 
 class GLNode(CocosNode):
+    "Convenience class for handling the CocosNode transform matrix when doing OpenGL operations"
     def __init__(self):
         super(GLNode, self).__init__()
     
@@ -20,6 +21,7 @@ class GLNode(CocosNode):
 
     
 class Ground(GLNode):
+    "Set of horizontal lines at and below defined y coordinate"
     def __init__(self, altitude):
         super(Ground, self).__init__()
         self.width = director.get_window_size()[0]

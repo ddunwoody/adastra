@@ -11,6 +11,7 @@ from utils import load_image
 
 
 class System(CocosNode):
+    "Base class for items which update each frame and need a reference to the parent vehicle"
     def __init__(self):
         super(System, self).__init__()
         self.vehicle = None
@@ -22,6 +23,7 @@ class System(CocosNode):
         self.update(dt)
 
     def update(self, dt):
+        "Override this method in subclasses"
         pass
 
     
@@ -67,6 +69,7 @@ class ValueAndRate(System):
 
 
 class Exhaust(ParticleSystem):
+    "Flames from an engine"
     total_particles = 200
     duration = -1
 

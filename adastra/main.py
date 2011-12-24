@@ -13,33 +13,35 @@ from systems import Lander
     
 
 class WorldLayer(Layer):
+    "Renders the lander and the world"
     def __init__(self, lander):
         super(WorldLayer, self).__init__()
-        self.add(lander)
         self.add(Ground(lander.get_rect().bottom + 1))
+        self.add(lander)
 
 
 class ControlHandler(CocosNode):
-    def __init__(self, lander):
+    "Handles keyboard input directed to a vehicle"
+    def __init__(self, vehicle):
         super(ControlHandler, self).__init__()
         self.keyboard = key.KeyStateHandler()
-        self.lander = lander
+        self.vehicle = vehicle
         self.schedule(self.update)
 
     def update(self, dt):
         delta = 1
-        self.lander.rvel = 0
+        self.vehicle.rvel = 0
         if self.keyboard[key.LSHIFT]:
             delta = 0.1
-        self.lander.engine.throttle.value += dt * self.keyboard[key.W] * delta
-        self.lander.engine.throttle.value -= dt * self.keyboard[key.S] * delta
+        self.vehicle.engine.throttle.value += dt * self.keyboard[key.W] * delta
+        self.vehicle.engine.throttle.value -= dt * self.keyboard[key.S] * delta
         if self.keyboard[key.SPACE]:
-            self.lander.engine.throttle.value = 0
+            self.vehicle.engine.throttle.value = 0
         if self.keyboard[key.E]:
-            self.lander.engine.throttle.value = 1
+            self.vehicle.engine.throttle.value = 1
         if self.keyboard[key.A] or self.keyboard[key.D]:
-            self.lander.rvel = self.keyboard[key.A] * -45 + self.keyboard[key.D] * 45
-            self.lander.rvel *= delta 
+            self.vehicle.rvel = self.keyboard[key.A] * -45 + self.keyboard[key.D] * 45
+            self.vehicle.rvel *= delta 
 
 
 if __name__ == "__main__":

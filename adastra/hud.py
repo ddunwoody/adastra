@@ -13,7 +13,7 @@ class HUDLayer(Layer):
     "Display HUD elements"
     def __init__(self, vehicle, keyboard):
         super(HUDLayer, self).__init__()
-        x,y = director.get_window_size()
+        x = director.get_window_size()[0]
         self.add(SystemsLabel(vehicle.systems, (x-5, 10), anchor_x="right", font_name="Press Start 2P", font_size=8))
         self.add(ThrusterLights(keyboard, (x-16, 64)))
 
@@ -50,6 +50,7 @@ class ThrusterLights(BatchNode):
         self.schedule(self.update)
 
     def update(self, dt):
+        "Turns on/off the relevant light associated to each key"
         for k, sprite in self.sprites.iteritems():
             if self.keyboard[k]:
                 sprite.image = self.images[1]
