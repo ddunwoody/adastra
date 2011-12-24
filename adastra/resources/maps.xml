@@ -1,0 +1,112 @@
+<resource>
+  <imageatlas size="64x64" file="tiles.png">
+    <image id="i-pad" offset="0,0" />
+    <image id="i-ground" offset="64,0" />
+    <image id="i-space" offset="128,0" />
+    <image id="i-depot" offset="192,0" />
+  </imageatlas>
+  <tileset>
+    <tile id="pad"><image ref="i-pad" /></tile>
+    <tile id="ground"><image ref="i-ground" /></tile>
+    <tile id="space"><image ref="i-space" /></tile>
+    <tile id="depot"><image ref="i-depot" /></tile>
+  </tileset>
+  <rectmap id="map0" tile_size="64x64">
+    <column>
+      <cell tile="ground" />
+      <cell tile="space" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+    <column>
+      <cell tile="ground" />
+      <cell tile="space" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+    <column>
+      <cell tile="ground" />
+      <cell tile="space" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+    <column>
+      <cell tile="ground" />
+      <cell tile="space" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+    <column>
+      <cell tile="ground" />
+      <cell tile="pad" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+    <column>
+      <cell tile="ground" />
+      <cell tile="space" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+    <column>
+      <cell tile="ground" />
+      <cell tile="space" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+    <column>
+      <cell tile="ground" />
+      <cell tile="space" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+    <column>
+      <cell tile="ground" />
+      <cell tile="space" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+    <column>
+      <cell tile="ground" />
+      <cell tile="space" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+    <column>
+      <cell tile="ground" />
+      <cell tile="space" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+    <column>
+      <cell tile="ground" />
+      <cell tile="depot" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+    <column>
+      <cell tile="ground" />
+      <cell tile="space" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+      <column>
+      <cell tile="ground" />
+      <cell tile="space" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+      <column>
+      <cell tile="ground" />
+      <cell tile="space" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+      <column>
+      <cell tile="ground" />
+      <cell tile="space" />
+      <cell tile="space" />
+      <cell tile="space" />
+    </column>
+  </rectmap>
+</resource>

@@ -1,7 +1,8 @@
 from cocos.cocosnode import CocosNode
 from cocos.director import director
-from cocos.layer import Layer
+from cocos.layer import ScrollableLayer, ScrollingManager
 from cocos.scene import Scene
+from cocos import tiles
 
 from pyglet.window import key
 
@@ -12,11 +13,10 @@ from hud import HUDLayer
 from systems import Lander
     
 
-class WorldLayer(Layer):
+class WorldLayer(ScrollableLayer):
     "Renders the lander and the world"
     def __init__(self, lander):
         super(WorldLayer, self).__init__()
-        self.add(Ground(lander.get_rect().bottom + 1))
         self.add(lander)
 
 
@@ -54,6 +54,11 @@ if __name__ == "__main__":
     control_handler = ControlHandler(lander)
     director.window.push_handlers(control_handler.keyboard)
 
-    scene = Scene(control_handler, WorldLayer(lander), HUDLayer(lander, control_handler.keyboard))
+    scroller = ScrollingManager()
+    map_layer = tiles.load('maps.xml')['map0']
+    scroller.add(map_layer)
+    scroller.add(WorldLayer(lander))
+
+    scene = Scene(control_handler, scroller, HUDLayer(lander, control_handler.keyboard))
     director.run(scene)
     
