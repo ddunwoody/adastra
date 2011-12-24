@@ -1,31 +1,14 @@
-from cocos.cocosnode import CocosNode
 from cocos.director import director
 from cocos.layer import Layer
 from cocos.scene import Scene
 
-from pyglet.gl import GL_LINES, glColor3f, glPushMatrix, glPopMatrix
-from pyglet.graphics import draw
 from pyglet.window import key
 
 import setup
-from systems import Lander
-from hud import HUDLayer
 
-class Ground(CocosNode):
-    def __init__(self, altitude):
-        super(Ground, self).__init__()
-        self.width = director.get_window_size()[0]
-        self.altitude = altitude
-    
-    def draw(self):
-        glPushMatrix()
-        self.transform()
-        glColor3f(0,0.5,0)
-        offset = 0
-        for i in range(8):
-            draw(2, GL_LINES, ('v2i', (0, self.altitude - offset, self.width, self.altitude - offset)))
-            offset += i*2
-        glPopMatrix()
+from glnode import Ground
+from hud import HUDLayer
+from systems import Lander
     
 
 class WorldLayer(Layer):
