@@ -6,7 +6,7 @@ setup(
     name = 'Ad Astra',
     version = __version__,
     packages = find_packages(),
-    install_requires=['cocos2d>=0.5.0',],
+    install_requires=['cocos2d', 'pymunk', 'PyOpenGL', 'PyOpenGL-accelerate',],
     tests_require=['nose'],
     test_suite='nose.collector',
 )
