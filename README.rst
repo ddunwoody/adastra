@@ -12,4 +12,8 @@ A simple `Lunar Lander`_ game in Python_ using cocos2d_.
 To Run
 ------
 
-You'll need cocos2d installed; I'm not sure that setup.py is actually correct.  Then simply run ``python adastra/main.py``.
+Create and activate a virtualenv, then run::
+
+python setup.py develop
+python adastra/main.py
+
