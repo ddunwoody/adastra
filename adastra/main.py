@@ -1,3 +1,4 @@
+from cocos.cocosnode import CocosNode
 from cocos.director import director
 from cocos.layer import Layer
 from cocos.scene import Scene
@@ -16,7 +17,31 @@ class WorldLayer(Layer):
         super(WorldLayer, self).__init__()
         self.add(lander)
         self.add(Ground(lander.get_rect().bottom + 1))
-    
+
+
+class ControlHandler(CocosNode):
+    def __init__(self, lander):
+        super(ControlHandler, self).__init__()
+        self.keyboard = key.KeyStateHandler()
+        self.lander = lander
+        self.schedule(self.update)
+
+    def update(self, dt):
+        delta = 1
+        self.lander.rvel = 0
+        if self.keyboard[key.LSHIFT]:
+            delta = 0.1
+        self.lander.engine.throttle.value += dt * self.keyboard[key.W] * delta
+        self.lander.engine.throttle.value -= dt * self.keyboard[key.S] * delta
+        if self.keyboard[key.SPACE]:
+            self.lander.engine.throttle.value = 0
+        if self.keyboard[key.E]:
+            self.lander.engine.throttle.value = 1
+        if self.keyboard[key.A] or self.keyboard[key.D]:
+            self.lander.rvel = self.keyboard[key.A] * -45 + self.keyboard[key.D] * 45
+            self.lander.rvel *= delta 
+
+
 if __name__ == "__main__":
     setup.resources()
 
@@ -24,31 +49,9 @@ if __name__ == "__main__":
     x,y = director.get_window_size()
 
     lander = Lander(position=(x/2, 50))
+    control_handler = ControlHandler(lander)
+    director.window.push_handlers(control_handler.keyboard)
 
-    keyboard = key.KeyStateHandler()
-    director.window.push_handlers(keyboard)
-
-    def update(dt):
-        delta = 1
-        lander.rvel = 0
-        if keyboard[key.LSHIFT]:
-            delta = 0.1
-        lander.engine.throttle.value += dt * keyboard[key.W] * delta
-        lander.engine.throttle.value -= dt * keyboard[key.S] * delta
-        if keyboard[key.SPACE]:
-            lander.engine.throttle.value = 0
-        if keyboard[key.E]:
-            lander.engine.throttle.value = 1
-        if keyboard[key.A] or keyboard[key.D]:
-            lander.rvel = keyboard[key.A] * -45 + keyboard[key.D] * 45
-            lander.rvel *= delta 
-
-    layer = Layer()
-    layer.add(lander)
-
-    scene = Scene(WorldLayer(lander), HUDLayer(lander, keyboard))
-    scene.schedule(update)
-
-    
+    scene = Scene(control_handler, WorldLayer(lander), HUDLayer(lander, control_handler.keyboard))
     director.run(scene)
     
