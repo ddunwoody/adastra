@@ -30,7 +30,6 @@ class ControlHandler(CocosNode):
 
     def update(self, dt):
         delta = 1
-        self.vehicle.rvel = 0
         if self.keyboard[key.LSHIFT]:
             delta = 0.1
         self.vehicle.engine.throttle.value += dt * self.keyboard[key.W] * delta

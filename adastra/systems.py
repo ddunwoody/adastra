@@ -5,17 +5,20 @@ from cocos.sprite import Sprite
 
 
 from numpy import clip
-from math import radians, sin, cos
 
 from utils import load_image
 
+import pymunk
 
 class System(CocosNode):
     "Base class for items which update each frame and need a reference to the parent vehicle"
     def __init__(self):
         super(System, self).__init__()
         self.vehicle = None
-        self.schedule(self._update)
+        CocosNode.schedule(self, self._update)
+
+    def schedule(self, callback, *args, **kwargs):
+        print "WARNING: Do not call this method - simply define an update method instead"
 
     def _update(self, dt):
         if not self.vehicle:
@@ -24,7 +27,6 @@ class System(CocosNode):
 
     def update(self, dt):
         "Override this method in subclasses"
-        pass
 
     
 class Throttle(object):
@@ -121,7 +123,6 @@ class Engine(System):
         self.spool_time = spool_time
         self.max_thrust = max_thrust
         self._power = 0
-        self.schedule(self.update)
         exhaust = Exhaust(self)
         exhaust.position = (1, -2)
         self.add(exhaust)
@@ -131,6 +132,7 @@ class Engine(System):
         delta = self.throttle.value - self._power
         abs_move = dt / self.spool_time
         self._power += clip(delta, -abs_move, abs_move)
+        self.vehicle.body.apply_impulse((0, self.thrust*dt))
         
     @property
     def thrust(self):
@@ -154,38 +156,40 @@ class Vehicle(Sprite):
 class Lander(Vehicle):
     def __init__(self, image="lander.png", **kwargs):
         super(Lander, self).__init__(image, **kwargs)
-        self.vvel = 0
-        self.hvel = 0
-        self.rvel = 0
-        self.vaccel = 0
-        self.haccel = 0
-        self.schedule(self.update)
-        self.engine = Engine(position=(0,-4), max_thrust=15)
+
+        self.space = pymunk.Space()
+        self.space.gravity = (0.0, -10.0)
+        mass = 100
+        size = 10
+        inertia = pymunk.moment_for_box(mass, size, size)
+        self.body = pymunk.Body(mass, inertia)
+        self.body.position = self.position
+        shape = pymunk.Poly.create_box(self.body, (size,size))
+        self.space.add(self.body, shape)
+
+        self.engine = Engine(position=(0,-4), max_thrust=1500)
         self.add_system(self.engine)
         self.add_system(ValueAndRate("Alt", "y", -50))
         self.add_system(ValueAndRate("VVI", "vvel"))
         self.add_system(ValueAndRate("HVI", "hvel"))
         self.add_system(ValueAndRate("RVI", "rvel"))
-        self.landed = True
+
+        self.schedule(self.update)
 
 
     def update(self, dt):
-        self.vaccel = -10 + self.engine.thrust * cos(radians(self.rotation))
-        self.haccel = self.engine.thrust * sin(radians(self.rotation))
-        self.vvel += self.vaccel * dt
-        self.hvel += self.haccel * dt
-        self.y += self.vvel * dt
-        self.x += self.hvel * dt
-        self.rotation += self.rvel * dt
+        self.space.step(dt)
+        self.position = self.body.position
+        
+    @property
+    def vvel(self):
+        return self.body.velocity[1]
 
-        if self.y < 50:
-            self.y = 50
-            self.vvel = 0
-            self.hvel = 0
-            self.rvel = 0
-            self.rotation = 0
-            if not self.landed:
-                self.engine.throttle.value = 0
-                self.landed = True
-        else:
-            self.landed = False
+    @property
+    def hvel(self):
+        return self.body.velocity[0]
+
+    @property
+    def rvel(self):
+        return self.body.angular_velocity
+
