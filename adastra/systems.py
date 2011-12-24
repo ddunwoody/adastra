@@ -1,10 +1,14 @@
 from cocos.cocosnode import CocosNode
+from cocos.euclid import Point2
+from cocos.particle import ParticleSystem, Color
 from cocos.sprite import Sprite 
+
 
 from numpy import clip
 from math import radians, sin, cos
 
 from utils import load_image
+
 
 class System(CocosNode):
     def __init__(self):
@@ -62,6 +66,50 @@ class ValueAndRate(System):
         return "%s(%+0.2f, %+0.2f)" % (self.name, self.value+self.offset, self.rate)
 
 
+class Exhaust(ParticleSystem):
+    total_particles = 200
+    duration = -1
+
+    angle = 270.0
+    angle_var = 10.0
+
+    speed = 10.0
+    speed_var = 2.0
+
+    radial_accel = -2.0
+    radial_accel_var = 0.5
+
+    pos_var = Point2(3.0, 0.0)
+
+    life = 3
+    life_var = 0.5
+
+    active = False
+    emission_rate = 0
+
+    # color of particles
+    start_color = Color(0.75, 0.25, 0.12, 1.0)
+    start_color_var = Color(0.0, 0.0, 0.0, 0.0)
+    end_color = Color(0.0, 0.0, 0.0, 0.0)
+    end_color_var = Color(0.0, 0.0, 0.0, 0.0)
+
+    size = 15.0
+    size_var = 2.0
+
+    blend_additive = True
+
+    def __init__(self, engine):
+        super(Exhaust, self).__init__()
+        self.engine = engine
+        self.schedule(self.update)
+        
+    def update(self, dt):
+        if self.engine.thrust == 0:
+            self.active = False
+        else:
+            self.active = True
+            self.emission_rate = self.engine.thrust * 5
+
 class Engine(System):
     def __init__(self, position, throttle=Throttle(), spool_time=3, max_thrust=1):
         super(Engine, self).__init__()
@@ -71,6 +119,9 @@ class Engine(System):
         self.max_thrust = max_thrust
         self._power = 0
         self.schedule(self.update)
+        exhaust = Exhaust(self)
+        exhaust.position = (1, -2)
+        self.add(exhaust)
       
     def update(self, dt):
         "Calculates power by lagging throttle according to spool_time"
@@ -113,6 +164,7 @@ class Lander(Vehicle):
         self.add_system(ValueAndRate("HVI", "hvel"))
         self.add_system(ValueAndRate("RVI", "rvel"))
         self.landed = True
+
 
     def update(self, dt):
         self.vaccel = -10 + self.engine.thrust * cos(radians(self.rotation))

@@ -16,8 +16,7 @@ class WorldLayer(Layer):
         super(WorldLayer, self).__init__()
         self.add(lander)
         self.add(Ground(lander.get_rect().bottom + 1))
-        
-
+    
 if __name__ == "__main__":
     setup.resources()
 
