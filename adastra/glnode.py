@@ -10,7 +10,7 @@ class GLNode(CocosNode):
     def __init__(self):
         super(GLNode, self).__init__()
     
-    def draw(self):
+    def draw(self, *args, **kwargs):
         glPushMatrix()
         self.transform()
         self.drawGl()
