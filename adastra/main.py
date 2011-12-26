@@ -62,5 +62,4 @@ def main():
     director.run(scene)
 
 if __name__ == "__main__":
-    import cProfile
-    cProfile.run('main()', 'mainprof')
+    main()
