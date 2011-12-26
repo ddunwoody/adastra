@@ -4,6 +4,8 @@ from cocos.director import director
 from pyglet.gl import glPushMatrix, glPopMatrix, GL_LINES, glColor3f
 import pyglet.graphics
 
+import pymunk
+import physics
 
 class GLNode(CocosNode):
     "Convenience class for handling the CocosNode transform matrix when doing OpenGL operations"
@@ -26,6 +28,11 @@ class Ground(GLNode):
         super(Ground, self).__init__()
         self.width = director.get_window_size()[0]
         self.altitude = altitude
+        body = pymunk.Body()
+        segment = pymunk.Segment(body, (0, altitude), (self.width, altitude), 0)
+        segment.elasticity = 0.2
+        segment.friction = 0.7
+        physics.space.add_static(segment)
     
     def drawGl(self):
         glColor3f(0,0.5,0)

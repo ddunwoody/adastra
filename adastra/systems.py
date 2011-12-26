@@ -3,30 +3,20 @@ from cocos.euclid import Point2
 from cocos.particle import ParticleSystem, Color
 from cocos.sprite import Sprite 
 
-
-from numpy import clip
+import numpy as np
 
 from utils import load_image
 
-import pymunk
+import physics
 
 class System(CocosNode):
     "Base class for items which update each frame and need a reference to the parent vehicle"
     def __init__(self):
         super(System, self).__init__()
         self.vehicle = None
-        CocosNode.schedule(self, self._update)
-
-    def schedule(self, callback, *args, **kwargs):
-        print "WARNING: Do not call this method - simply define an update method instead"
-
-    def _update(self, dt):
-        if not self.vehicle:
-            self.vehicle = self.get_ancestor(Vehicle)
-        self.update(dt)
-
+        
     def update(self, dt):
-        "Override this method in subclasses"
+        pass
 
     
 class Throttle(object):
@@ -42,7 +32,7 @@ class Throttle(object):
     
     @value.setter
     def value(self, value):
-        self._value = clip(value, self.min, self.max)
+        self._value = np.clip(value, self.min, self.max)
         
     def __str__(self):
         return "Throttle(%0.2f)" % self.value
@@ -50,24 +40,28 @@ class Throttle(object):
 
 class ValueAndRate(System):
     "Attribute indicator, including rate of change"
-    def __init__(self, name, attr, offset=0):
+    def __init__(self, name, attr, offset=0, buffer=5):
         super(ValueAndRate, self).__init__()
         self.name = name
         self.attr = attr
         self.offset = offset
+        self.buffer = buffer
+        self.values = np.zeros(self.buffer)
+        self.dts = np.zeros(self.buffer)
+        self.idx = 0
         self.value = 0
         self.rate = 0
 
     def update(self, dt):
-        value = getattr(self.vehicle, self.attr)
-        if dt == 0:
-            self.rate = 0
-        else:
-            self.rate =  (value - self.value) / dt
-        self.value = value
+        #TODO: fix rate calculation
+        self.value = getattr(self.vehicle, self.attr)
+        self.values[self.idx] = self.value
+        self.dts[self.idx] = dt
+        self.rate = np.mean(self.values*self.dts*self.buffer)
+        self.idx = 0 if self.idx == self.buffer-1 else self.idx + 1
         
     def __str__(self):
-        return "%s(%+0.2f, %+0.2f)" % (self.name, self.value+self.offset, self.rate)
+        return "%s(%+0.2f, %+0.2f)" % (self.name, self.value + self.offset, self.rate)
 
 
 class Exhaust(ParticleSystem):
@@ -106,14 +100,13 @@ class Exhaust(ParticleSystem):
     def __init__(self, engine):
         super(Exhaust, self).__init__()
         self.engine = engine
-        self.schedule(self.update)
         
     def update(self, dt):
         if self.engine.thrust == 0:
             self.active = False
         else:
             self.active = True
-            self.emission_rate = self.engine.thrust * 5
+            self.emission_rate = self.engine._power * self.total_particles / self.life
 
 class Engine(System):
     def __init__(self, position, throttle=Throttle(), spool_time=3, max_thrust=1):
@@ -123,16 +116,18 @@ class Engine(System):
         self.spool_time = spool_time
         self.max_thrust = max_thrust
         self._power = 0
-        exhaust = Exhaust(self)
-        exhaust.position = (1, -2)
-        self.add(exhaust)
+        self.exhaust = Exhaust(self)
+        self.exhaust.position = (1, -2)
+        self.add(self.exhaust)
       
     def update(self, dt):
         "Calculates power by lagging throttle according to spool_time"
         delta = self.throttle.value - self._power
         abs_move = dt / self.spool_time
-        self._power += clip(delta, -abs_move, abs_move)
-        self.vehicle.body.apply_impulse((0, self.thrust*dt))
+        self._power += np.clip(delta, -abs_move, abs_move)
+        if self.thrust > 0:
+            self.vehicle.box.apply_force((0, self.thrust), self.position)
+        self.exhaust.update(dt)
         
     @property
     def thrust(self):
@@ -149,47 +144,44 @@ class Vehicle(Sprite):
         self.systems = []
 
     def add_system(self, system):
-        self.add(system)
         self.systems.append(system)
+        system.vehicle = self
+        self.add(system)
 
     
 class Lander(Vehicle):
-    def __init__(self, image="lander.png", **kwargs):
+    def __init__(self, image="lander.png", position=(0, 0), **kwargs):
         super(Lander, self).__init__(image, **kwargs)
 
-        self.space = pymunk.Space()
-        self.space.gravity = (0.0, -10.0)
-        mass = 100
-        size = 10
-        inertia = pymunk.moment_for_box(mass, size, size)
-        self.body = pymunk.Body(mass, inertia)
-        self.body.position = self.position
-        shape = pymunk.Poly.create_box(self.body, (size,size))
-        self.space.add(self.body, shape)
+        self.box = physics.Box(100, 15)
+        self.add(self.box)
+        self.position = self.box.body.position = position
 
-        self.engine = Engine(position=(0,-4), max_thrust=1500)
+        self.engine = Engine(position=(0, -4), max_thrust=1500)    
         self.add_system(self.engine)
         self.add_system(ValueAndRate("Alt", "y", -50))
         self.add_system(ValueAndRate("VVI", "vvel"))
         self.add_system(ValueAndRate("HVI", "hvel"))
         self.add_system(ValueAndRate("RVI", "rvel"))
 
-        self.schedule(self.update)
-
-
     def update(self, dt):
-        self.space.step(dt)
-        self.position = self.body.position
-        
+        self.box.reset_forces()
+        for system in self.systems:
+            system.update(dt)
+        self.box.update(dt)
+
+        self.position = self.box.position
+        self.rotation = self.box.rotation
+
     @property
     def vvel(self):
-        return self.body.velocity[1]
+        return self.box.body.velocity[1]
 
     @property
     def hvel(self):
-        return self.body.velocity[0]
+        return self.box.body.velocity[0]
 
     @property
     def rvel(self):
-        return self.body.angular_velocity
+        return self.box.body.angular_velocity
 

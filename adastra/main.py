@@ -10,7 +10,7 @@ import setup
 from glnode import Ground
 from hud import HUDLayer
 from systems import Lander
-    
+import physics    
 
 class WorldLayer(Layer):
     "Renders the lander and the world"
@@ -26,10 +26,11 @@ class ControlHandler(CocosNode):
         super(ControlHandler, self).__init__()
         self.keyboard = key.KeyStateHandler()
         self.vehicle = vehicle
-        self.schedule(self.update)
 
     def update(self, dt):
         delta = 1
+        if self.keyboard[key.X]:
+            physics.draw_debug = not physics.draw_debug
         if self.keyboard[key.LSHIFT]:
             delta = 0.1
         self.vehicle.engine.throttle.value += dt * self.keyboard[key.W] * delta
@@ -39,13 +40,12 @@ class ControlHandler(CocosNode):
         if self.keyboard[key.E]:
             self.vehicle.engine.throttle.value = 1
         if self.keyboard[key.A] or self.keyboard[key.D]:
-            self.vehicle.rvel = self.keyboard[key.A] * -45 + self.keyboard[key.D] * 45
-            self.vehicle.rvel *= delta 
+            torque = 1000 * delta
+            self.vehicle.box.body.torque = self.keyboard[key.A] * torque + self.keyboard[key.D] * -torque
 
-
-if __name__ == "__main__":
+def main():
     setup.resources()
-
+    physics.space.gravity = (0, -10)
     director.init(caption="Ad Astra", resizable=True, width=1024, height=640)
     x,y = director.get_window_size()
 
@@ -54,5 +54,13 @@ if __name__ == "__main__":
     director.window.push_handlers(control_handler.keyboard)
 
     scene = Scene(control_handler, WorldLayer(lander), HUDLayer(lander, control_handler.keyboard))
+    def update(dt):
+        control_handler.update(dt)
+        lander.update(dt)
+        physics.space.step(dt)
+    scene.schedule_interval(update, 1/60.0)
     director.run(scene)
-    
+
+if __name__ == "__main__":
+    import cProfile
+    cProfile.run('main()', 'mainprof')

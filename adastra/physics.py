@@ -1,13 +1,12 @@
-from cocos import director, layer, scene
-
-import glnode
 import pymunk
 import pyglet.graphics
 import math
 
+from cocos import cocosnode
+
 from pyglet.gl import glColor3f, GL_LINES, GL_LINE_LOOP
 
-class Box(glnode.GLNode):
+class Box(cocosnode.CocosNode):
     def __init__(self, mass, size):
         super(Box, self).__init__()
         self.size = size
@@ -17,7 +16,6 @@ class Box(glnode.GLNode):
         shape.elasticity = 0.2
         shape.friction = 0.7
         space.add(self.body, shape)
-        self.schedule(self.update)
         p = self.size / 2
         self.vertex_list = pyglet.graphics.vertex_list(4, ("v2f\static", (-p,p, p,p, p,-p, -p,-p)))
         
@@ -34,7 +32,6 @@ class Box(glnode.GLNode):
             force = self._rotate_vector(self.body.angle, *f)
             pos = self._rotate_vector(self.body.angle, *r)
             self.body.apply_impulse(self._scale_vector(dt, *force), pos)
-        space.step(dt)
         self.position = self.body.position
         self.rotation = math.degrees(-self.body.angle)
 
@@ -48,41 +45,15 @@ class Box(glnode.GLNode):
     def _scale_vector(self, factor, x, y):
         return x*factor, y*factor
 
-    def drawGl(self):
-        self.vertex_list.draw(GL_LINE_LOOP)
-        glColor3f(1,1,0)
-        for j,r in self.forces:
-            pyglet.graphics.draw(2, GL_LINES, ("v2f", (r[0], r[1], r[0] + j[0], r[1] + j[1])))
-        glColor3f(1,1,1)
+    def draw(self):
+        if draw_debug:
+            glColor3f(1,1,1)
+            self.vertex_list.draw(GL_LINE_LOOP)
+            glColor3f(1,1,0)
+            for j,r in self.forces:
+                pyglet.graphics.draw(2, GL_LINES, ("v2f", (r[0], r[1], r[0] + j[0]/10, r[1] + j[1]/10)))
 
-class Slope(glnode.GLNode):
-    def __init__(self, a, b, radius):
-        super(Slope, self).__init__()
-        body = pymunk.Body()
-        l1 = pymunk.Segment(body, a, b, radius)
-        l1.elasticity = 0.2
-        l1.friction = 0.7
-        space.add_static(l1)
-        self.vertex_list = pyglet.graphics.vertex_list(2, ("v2f\static", (a[0], a[1], b[0], b[1])))
-    
-    def drawGl(self):
-        self.vertex_list.draw(GL_LINES)
-
+draw_debug = False
 space = pymunk.Space()
 "The singleton space"
-
-
-if __name__ == "__main__":
-    director.director.init(caption="Physics Spike", resizable=True, width=1024, height=640)
-    space.gravity = (0.0, -10.0)
-
-    physics_layer = layer.Layer()
-    b = Box(10, 10)
-    s = Slope((400,300), (600,280), 0)
-    b.body.position = (512,350)
-    b.apply_force((0,100), (1,0))
-    physics_layer.add(s)
-    physics_layer.add(b)
-
-    director.director.run(scene.Scene(physics_layer))
     
