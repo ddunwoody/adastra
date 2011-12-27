@@ -1,3 +1,12 @@
+consts = {
+    'window': {
+        'caption': "Ad Astra", 
+        'resizable': True,
+        'width': 1024,
+        'height': 640,
+    },
+}
+
 def resources():
     "Adds resources to path and loads fonts"
     import pyglet.resource, pyglet.font

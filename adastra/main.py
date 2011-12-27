@@ -46,7 +46,7 @@ class ControlHandler(CocosNode):
 def main():
     setup.resources()
     physics.space.gravity = (0, -10)
-    director.init(caption="Ad Astra", resizable=True, width=1024, height=640)
+    director.init(**setup.consts['window'])
     x,y = director.get_window_size()
 
     lander = Lander(position=(x/2, 50))
