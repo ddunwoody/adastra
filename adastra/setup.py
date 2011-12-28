@@ -6,7 +6,7 @@ consts = {
         'resizable': True,
         'width': 1024,
         'height': 640,
-        'config': pyglet.gl.Config(samples=4)
+        'config': pyglet.gl.Config(samples=8)
     },
 }
 
