@@ -1,6 +1,5 @@
-.project
-.pydevproject
+.idea/
+.cache/
 *.pyc
-*.pyo
-Ad_Astra.egg-info
-build
+*.egg-info/
+.DS_Store
