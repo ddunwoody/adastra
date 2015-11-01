@@ -32,7 +32,7 @@ class Ground(GLNode):
         segment = pymunk.Segment(body, (0, altitude), (self.width, altitude), 0)
         segment.elasticity = 0.2
         segment.friction = 0.7
-        physics.space.add_static(segment)
+        physics.space.add(segment)
     
     def drawGl(self):
         glColor3f(0,0.5,0)
