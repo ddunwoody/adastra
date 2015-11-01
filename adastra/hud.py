@@ -3,6 +3,7 @@ from cocos.director import director
 from cocos.layer import Layer
 from cocos.sprite import Sprite
 from cocos.text import Label
+import pkg_resources
 
 from utils import load_image
 
@@ -36,7 +37,7 @@ class ThrusterLights(BatchNode):
         self.keyboard = keyboard
         self.position = position
 
-        self.images = ImageGrid(load_image("lights.png"), 1, 2)
+        self.images = ImageGrid(load_image(pkg_resources.resource_filename("adastra.resources", "lights.png")), 1, 2)
 
         self.sprites = {}
         self.sprites[key.W] = Sprite(self.images[0], (0, spread))

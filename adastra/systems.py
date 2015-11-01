@@ -4,10 +4,12 @@ from cocos.particle import ParticleSystem, Color
 from cocos.sprite import Sprite 
 
 import numpy as np
+import pkg_resources
 
 from utils import load_image
 
 import physics
+
 
 class System(CocosNode):
     "Base class for items which update each frame and need a reference to the parent vehicle"
@@ -108,6 +110,7 @@ class Exhaust(ParticleSystem):
             self.active = True
             self.emission_rate = self.engine._power * self.total_particles / self.life
 
+
 class Engine(System):
     def __init__(self, position, throttle=Throttle(), spool_time=3, max_thrust=1):
         super(Engine, self).__init__()
@@ -150,7 +153,7 @@ class Vehicle(Sprite):
 
     
 class Lander(Vehicle):
-    def __init__(self, image="lander.png", position=(0, 0), **kwargs):
+    def __init__(self, image=pkg_resources.resource_filename("adastra.resources", "lander.png"), position=(0, 0), **kwargs):
         super(Lander, self).__init__(image, **kwargs)
 
         self.box = physics.Box(100, 15)
