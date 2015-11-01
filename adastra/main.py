@@ -12,6 +12,7 @@ from hud import HUDLayer
 from systems import Lander
 import physics    
 
+
 class WorldLayer(Layer):
     "Renders the lander and the world"
     def __init__(self, lander):
@@ -42,6 +43,7 @@ class ControlHandler(CocosNode):
         if self.keyboard[key.A] or self.keyboard[key.D]:
             torque = 1000 * delta
             self.vehicle.box.body.torque = self.keyboard[key.A] * torque + self.keyboard[key.D] * -torque
+
 
 def main():
     setup.resources()
