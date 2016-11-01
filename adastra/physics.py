@@ -10,7 +10,7 @@ class Box(cocosnode.CocosNode):
     def __init__(self, mass, size):
         super(Box, self).__init__()
         self.size = size
-        inertia = pymunk.moment_for_box(mass, size, size)
+        inertia = pymunk.moment_for_box(mass, (size, size))
         self.body = pymunk.Body(mass, inertia)
         shape = pymunk.Poly.create_box(self.body, (size,size))
         shape.elasticity = 0.2
@@ -31,7 +31,7 @@ class Box(cocosnode.CocosNode):
         for f,r in self.forces:
             force = self._rotate_vector(self.body.angle, *f)
             pos = self._rotate_vector(self.body.angle, *r)
-            self.body.apply_impulse(self._scale_vector(dt, *force), pos)
+            self.body.apply_impulse_at_local_point(self._scale_vector(dt, *force), pos)
         self.position = self.body.position
         self.rotation = math.degrees(-self.body.angle)
 

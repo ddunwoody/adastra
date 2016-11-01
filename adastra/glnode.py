@@ -28,7 +28,7 @@ class Ground(GLNode):
         super(Ground, self).__init__()
         self.width = director.get_window_size()[0]
         self.altitude = altitude
-        body = pymunk.Body()
+        body = pymunk.Body(body_type=pymunk.Body.STATIC)
         segment = pymunk.Segment(body, (0, altitude), (self.width, altitude), 0)
         segment.elasticity = 0.2
         segment.friction = 0.7
